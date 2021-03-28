@@ -24,8 +24,6 @@ public:
     /* In NPC, this function should deal with the   */
     /* transaction in easy implementation           */
     bool triggerEvent(Object*);
-    bool buyItem(Item*);
-    bool buyItem(int);
 
     /* Set & Get function*/
     void setScript(string);

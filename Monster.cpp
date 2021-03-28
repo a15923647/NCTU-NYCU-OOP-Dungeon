@@ -1,9 +1,9 @@
 #include "Monster.h"
-Monster::Monster(){
+Monster::Monster() : setGameCharacter("default_monster", "monster", 10, 10, 10){
 
 }
-Monster::Monster(string name, string tag, int hp, int atk, int def) : 
-  setGameCharacter(name, tag, hp, atk, def) {}
+Monster::Monster(string name, int hp, int atk, int def) : 
+  setGameCharacter(name, "monster", hp, atk, def) {}
 
 bool Monster::triggerEvent(Object* obj){
   //implement combat system

@@ -1,6 +1,6 @@
 #include "Player.h"
 #define min(a,b) ((a) < (b)) ? (a) : (b)
-Player::Player(){
+Player::Player() : GameCharacter("hahaha", "player", 10, 10, 10){
 
 }
 
@@ -24,7 +24,7 @@ void Player::increaseStates(int hpInc, int atkInc, int defInc){
 }
 
 bool Player::triggerEvent(Object* obj){
-  Player ply = dynamic_cast<Item*>(obj);
+  Player* ply = dynamic_cast<Item*>(obj);
   if(ply == NULL) return false;
   //open chest
   this -> addItem(obj);

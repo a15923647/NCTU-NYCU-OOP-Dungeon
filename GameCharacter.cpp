@@ -5,8 +5,7 @@ GameCharacter::GameCharacter() : name(""), maxHealth(0), currentHealth(0), attac
 }
 
 GameCharacter::GameCharacter(string name, string tag, int health, int attack, int defense) {
-  this -> name = name;
-  this -> tag = tag;
+  Object(name, tag);
   this -> currentHealth = health;
   this -> attack = attack;
   this -> defense = defense;
