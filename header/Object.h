@@ -25,6 +25,8 @@ public:
     void setTag(string);
     string getName();
     string getTag();
+    //for save every object
+    virtual void listMember(ofstream& fout) = 0;
 };
 
 #endif // OBJECT_H_INCLUDED

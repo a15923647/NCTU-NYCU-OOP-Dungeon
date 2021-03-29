@@ -6,6 +6,12 @@ Room::Room() : isExit(false), index(-1), object(NULL){
 
 Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects){}
 
+ostream& Room::operator << (ostream& outputStream, Room& room){
+  //for save room
+  //list all objects
+
+}
+
 bool popObject(Object* obj){
   size = obj->size();
   for(int i = 0; i < size; i++){

@@ -32,6 +32,23 @@ bool NPC::triggerEvent(Object* obj){
   return true;
 }
 
+void NPC::listMember(ofstream& fout){
+  fout << "tag " << this -> getTag() << endl;
+  fout << "name " << this -> getName() << endl;
+  fout << "maxHealth " << this -> getMaxHealth() << endl;
+  fout << "currentHealth " << this -> getCurrentHealth() << endl;
+  fout << "attack " << this -> getAttack() << endl;
+  fout << "defense " << this -> getDefense() << endl;
+  fout << "commodity : " << endl;
+  for(int i = 0; i < commodity.size(); i++){
+    fout << " - " << commodity[i].listMember();
+  }
+  fout << "script : " << endl;
+  fout << "'''" << endl;
+  fout << this -> getScript() << endl;
+  fout << "'''" << endl;
+  //undone
+}
 void NPC::setScript(string inp) : script(inp){}
 
 void NPC::getCommodity(){

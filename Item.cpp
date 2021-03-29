@@ -7,6 +7,14 @@ Item::Item(string name, int inphea, int inpatt, int inpdef) : Object(name, "item
 
 }
 
+override ofstream& Item::listMember(ofstream& fout){
+  fout << "tag " << this -> getTag() << endl;
+  fout << "name " << this -> getName() << endl;
+  fout << "health " << this -> getHealth() << endl;
+  fout << "attack " << this -> getAttack() << endl;
+  fout << "defense " << this -> getDefense() << endl;
+}
+
 int Item::getHealth(){
   return this -> health;
 }

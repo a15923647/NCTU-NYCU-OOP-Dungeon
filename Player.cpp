@@ -61,3 +61,18 @@ void Player::setInventory(vector<Item> v){
 }
 
 
+void Player::listMember(ofstream& fout){
+  fout << "tag " << this -> getTag() << endl;
+  fout << "name " << this -> getName() << endl;
+  fout << "maxHealth " << this -> getMaxHealth() << endl;
+  fout << "currentHealth " << this -> getCurrentHealth() << endl;
+  fout << "attack " << this -> getAttack() << endl;
+  fout << "defense " << this -> getDefense() << endl;
+  
+  for(int i = 0; i < inventory.size(); i++){
+    fout << " - " << inventory[i].listMember();
+  }
+
+  fout << "currentRoomId " << this -> currentRoom -> getIndex() << endl;
+  fout << "previousRoomId" << this -> previousRoom -> getIndex() << endl;
+}
