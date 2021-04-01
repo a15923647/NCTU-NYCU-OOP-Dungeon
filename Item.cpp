@@ -1,4 +1,23 @@
 #include "Item.h"
+#include<stdlib.h> //for including atoi
+#define loadItem(varName,value) (switch(varName){\
+  case "tag":\
+    this -> setTag(value);\
+    break;\
+  case "name":\
+    this -> setName(value);\
+    break;\
+  case "health":\
+    this -> setHealth(atoi(value));\
+    break;\
+  case "attack":\
+    this -> setAttack(atoi(value));\
+    break;\
+  case "defense":\
+    this -> setDefense(atoi(value));\
+    break;\
+}\
+)
 Item::Item() : Object("default_item","item"), health(0), attack(0), defense(0){
 
 }
@@ -13,6 +32,13 @@ override ofstream& Item::listMember(ofstream& fout){
   fout << "health " << this -> getHealth() << endl;
   fout << "attack " << this -> getAttack() << endl;
   fout << "defense " << this -> getDefense() << endl;
+}
+
+override static void Item::loadMember(ifstream& fin){
+  string varName, inp_line;
+  getline()
+  while()
+    //undone..
 }
 
 int Item::getHealth(){

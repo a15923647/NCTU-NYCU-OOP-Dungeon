@@ -6,10 +6,15 @@ Room::Room() : isExit(false), index(-1), object(NULL){
 
 Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects){}
 
-ostream& Room::operator << (ostream& outputStream, Room& room){
-  //for save room
-  //list all objects
-
+override void Room::listMember(ofstream &fout){
+  fout << "tag " << "room" << endl;
+  fout << "index " << this -> index << endl;
+  fout << "isExit " << this -> isExit << endl; // In C++ true : 1, false : 0
+  fout << "upRoomId" << this -> upRoom -> getIndex();
+  fout << "downRoomId" << this -> downRoom -> getIndex();
+  fout << "leftRoomId" << this -> leftRoom -> getIndex();
+  fout << "rightRoomId" << this -> rightRoom -> getIndex();
+  //deal with objects in Record.cpp
 }
 
 bool popObject(Object* obj){

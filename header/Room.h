@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class Room
+class Room : public Object
 {
 private:
     Room* upRoom;

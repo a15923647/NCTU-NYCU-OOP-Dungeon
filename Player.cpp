@@ -69,6 +69,7 @@ void Player::listMember(ofstream& fout){
   fout << "attack " << this -> getAttack() << endl;
   fout << "defense " << this -> getDefense() << endl;
   
+  fout << "inventory :"
   for(int i = 0; i < inventory.size(); i++){
     fout << " - " << inventory[i].listMember();
   }

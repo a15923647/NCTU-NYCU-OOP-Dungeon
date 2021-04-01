@@ -39,7 +39,7 @@ void NPC::listMember(ofstream& fout){
   fout << "currentHealth " << this -> getCurrentHealth() << endl;
   fout << "attack " << this -> getAttack() << endl;
   fout << "defense " << this -> getDefense() << endl;
-  fout << "commodity : " << endl;
+  fout << "commodity :" << endl;
   for(int i = 0; i < commodity.size(); i++){
     fout << " - " << commodity[i].listMember();
   }
