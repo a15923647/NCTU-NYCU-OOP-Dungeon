@@ -1,98 +1,63 @@
 #include "Record.h"
-#define CREATE_OBJ(tag) (switch(tag){    \
-    case "item":                         \
-      Item* obj = new Item();            \
-      break;                             \
-    case "NPC":                          \
-      NPC* obj = new NPC();              \
-      break;                             \
-    case "monster":                      \
-      Monster* obj = new Monster();      \
-      break;                             \
-    case "player":                       \
-      Player* obj = new Player();        \
-      break;                             \
-    case "room":                         \
-      Room* obj = new Room();            \
-      break;                             \
-  }                                      \
-)
+#include <assert.h>
 /*
- script split by 
- script : 
- '''
- '''
-inventory :
-- obj1.listMember
-- obj2.listMember...
-
-commodity :
-- obj1.listMember
-- obj2.listMember...
-
-other split by <space>
-
  */
 Record::Record(){
 
 }
 
-void Record::savePlayer(Player* player, ofstream& fout){
-    
+void Record::savePlayer(Player* player, ofstream& playerFile){
+  player -> listMember(playerFile);
 }
 
 void Record::saveRoom(vector<Room>& roomList, ofsteram& fout){
-  for(int i = 0; i < roomList.size(); i++)  {
-    //fout << roomList[i].index << endl; change implement
-    roomList[i].listMember();
-    //store objects
-    //get room objects and store them
-    vector<Object*> objList = roomList[i].getObjects();
-    for(int j = 0; j < objList.size(); j++){
-      fout << "objlist:" << endl;
-      objList[i] -> listMember(fout);
-    }
+  fout << roomList.size();
+  for(int i = 0; i < roomList.size(); i++){
+    roomList[i].listMember(fout);
   }
 }
 
-void Record::loadPlayer(Player* player, ifstream& fin){
-
+void Record::loadPlayer(Player* player, ifstream& playerFile, vecotr<Room>& roomList){
+  int cur, pre;
+  playerFile >> cur >> pre;
+  player -> loadMember(playerFile);
+  //put player on the map
+  player -> setCurrentRoom( &roomList[ cur ] );
+  player -> setPreviousRoom( &roomList[ pre ] );
 }
 
 
 
-void Record::loadRoom(vector<Room>& roomList, ifstream& fin){
-//create room first
-//then connect each of them by linked list
+void Record::loadRoom(vector<Room>& roomList, ifstream& roomFile){
+/*
+  create room first
+  then connect each of them by linked list
+*/
   roomList.clear();
-  string inp_line;
-  string tag;
-  int tag_pos = -1;
-  //get a object tag and create the coherent object
-  while(tag_pos == -1){
-    getline(fin, inp_line);
-    tag_pos = inp_line.find("tag");
+  int n;
+  roomFile >> n;
+  //create empty rooms
+  for(int i = 0; i < n; i++){
+    roomList.push_back(Room());
+    roomList[i].setIndex(i);
   }
-  //extract the tag
-  tag = inp_line.substr(tag_pos + 4);
-  //create the coherent object
-  CREATE_OBJ(tag);
-
-  /*while(getline(fin, inp_line)){
-    //read an empty line
-    if( inp_line.empty() ) continue;
-    //if : in line
-    int first_match = -1;
-    if( (first_match = inp_line.find(":")) != -1){
-      //a list
-      for( first_match = inp_line.find("-") ;\
-           first_match != -1;\
-           getline(fin, inp_line), inp_line.find("-") ){
-        
-      }
-    }
-  }*/
-  //use virtual static loadMember function instead
+  //load every room
+  int roomIdx = -1;
+  for(roomFile >> roomIdx; !roomFile.eof(); roomFile >> roomIdx){
+    roomList[ roomIdx ].loadMember(roomFile);
+  }
+  //connect them together
+  ifstream map = open("map");
+  int t = n;
+  while( t-- ){
+    int i, u, d, l, r;
+    roomFile >> i >> u >> d >> l >> r;
+    if(u != -1) roomList[i].setUpRoom( &roomList[u] );
+    if(d != -1) roomList[i].setDownRoom( &roomList[d] );
+    if(l != -1) roomList[i].setLeftRoom( &roomList[l] );
+    if(r != -1) roomList[i].setRightRoom( &roomList[r] );
+  }
+  map.close();
 }
 
 void Record::saveToFile(Player* player, vector<Room>&){

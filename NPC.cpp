@@ -1,5 +1,6 @@
 #include "NPC.h"
-#include<climits>
+#include <climits>
+#include <stdlib.h>
 NPC::NPC() : GameCharacter(name, "NPC", INT_MAX, INT_MAX){
 }
 
@@ -32,25 +33,35 @@ bool NPC::triggerEvent(Object* obj){
   return true;
 }
 
-void NPC::listMember(ofstream& fout){
-  fout << "tag " << this -> getTag() << endl;
-  fout << "name " << this -> getName() << endl;
-  fout << "maxHealth " << this -> getMaxHealth() << endl;
-  fout << "currentHealth " << this -> getCurrentHealth() << endl;
-  fout << "attack " << this -> getAttack() << endl;
-  fout << "defense " << this -> getDefense() << endl;
-  fout << "commodity :" << endl;
-  for(int i = 0; i < commodity.size(); i++){
-    fout << " - " << commodity[i].listMember();
+override void NPC::listMember(ofstream& roomFile){
+  roomFile << this -> getScript() << endl;
+  roomFile << this -> getMaxHealth() << " ";
+  roomFile << this -> getCurrentHealth() << " ";
+  roomFile << this -> getAttack() << " ";
+  roomFile << this -> getDefense() << " ";
+  roomFile << this -> getName() << " ";
+  vector<Item> commodity = this -> getCommodity();
+  int size = commodity.size();
+  roomFile << size << endl;
+  for(int i = 0; i < size; i++){
+    commodity[i].listMember(roomFile);
   }
-  fout << "script : " << endl;
-  fout << "'''" << endl;
-  fout << this -> getScript() << endl;
-  fout << "'''" << endl;
-  //undone
+}
+
+override static void NPC::loadMember(ifstream& roomFile){
+  string name, script;
+  int mh, ch, atk, def;
+  getline(roomFile, script);
+  roomFile >> mh >> ch >> atk >> def >> name;
+  this -> setScript(script);
+  this -> setMaxHealth(mh);
+  this -> setCurrentHealth(ch);
+  this -> setAttack(atk);
+  this -> setDefense(def);
+  this -> setName(name);
 }
 void NPC::setScript(string inp) : script(inp){}
 
 void NPC::getCommodity(){
-  return commodity;
+  return this -> commodity;
 }

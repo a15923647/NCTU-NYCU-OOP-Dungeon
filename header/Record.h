@@ -22,7 +22,7 @@ class Record
 private:
     void savePlayer(Player*, ofstream&);
     void saveRooms(vector<Room>&, ofstream&);
-    void loadPlayer(Player*, ifstream&);
+    void loadPlayer(Player*, ifstream&, vector<Room>&);
     void loadRooms(vector<Room>&, ifstream&);
 
 public:

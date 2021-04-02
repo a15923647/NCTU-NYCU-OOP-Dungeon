@@ -1,4 +1,5 @@
 #include "Monster.h"
+#include <stdlib.h>
 Monster::Monster() : setGameCharacter("default_monster", "monster", 10, 10, 10){
 
 }
@@ -44,11 +45,21 @@ bool Monster::triggerEvent(Object* obj){
 
 }
 
-void Monster::listMember(ofstream& fout){
-  fout << "tag " << this -> getTag() << endl;
-  fout << "name " << this -> getName() << endl;
-  fout << "maxHealth " << this -> getMaxHealth() << endl;
-  fout << "currentHealth " << this -> getCurrentHealth() << endl;
-  fout << "attack " << this -> getAttack() << endl;
-  fout << "defense " << this -> getDefense() << endl;
+void Monster::listMember(ofstream& roomFile){
+  roomFile << this -> getName() << " ";
+  roomFile << this -> getMaxHealth() << " ";
+  roomFile << this -> getCurrentHealth() << " ";
+  roomFile << this -> getAttack() << " ";
+  roomFile << this -> getDefense() << endl;
+}
+
+override static void Monster::loadMember(ifstream& roomFile){
+  int mh, ch, atk, def;
+  string name;
+  roomFile >> name >> mh >> ch >> atk >> def;
+  this -> setName(name);
+  this -> setMaxHealth(mh);
+  this -> setCurrentHealth(ch);
+  this -> setAttack(atk);
+  this -> setDefense(def);
 }

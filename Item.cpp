@@ -1,23 +1,5 @@
 #include "Item.h"
-#include<stdlib.h> //for including atoi
-#define loadItem(varName,value) (switch(varName){\
-  case "tag":\
-    this -> setTag(value);\
-    break;\
-  case "name":\
-    this -> setName(value);\
-    break;\
-  case "health":\
-    this -> setHealth(atoi(value));\
-    break;\
-  case "attack":\
-    this -> setAttack(atoi(value));\
-    break;\
-  case "defense":\
-    this -> setDefense(atoi(value));\
-    break;\
-}\
-)
+
 Item::Item() : Object("default_item","item"), health(0), attack(0), defense(0){
 
 }
@@ -26,19 +8,23 @@ Item::Item(string name, int inphea, int inpatt, int inpdef) : Object(name, "item
 
 }
 
-override ofstream& Item::listMember(ofstream& fout){
-  fout << "tag " << this -> getTag() << endl;
-  fout << "name " << this -> getName() << endl;
-  fout << "health " << this -> getHealth() << endl;
-  fout << "attack " << this -> getAttack() << endl;
-  fout << "defense " << this -> getDefense() << endl;
+override ofstream& Item::listMember(ofstream& roomFile){
+  roomFile << this -> getTag() << " ";
+  roomFile << this -> getName() << " ";
+  roomFile << this -> getHealth() << " ";
+  roomFile << this -> getAttack() << " ";
+  roomFile << this -> getDefense() << endl;
 }
 
-override static void Item::loadMember(ifstream& fin){
-  string varName, inp_line;
-  getline()
-  while()
-    //undone..
+override static void Item::loadMember(ifstream& roomFile){
+  string tag, name;
+  int h, a, d;
+  roomFile >> tag >> name >> h >> a >> d;
+  this -> setTag(tag);
+  this -> setName(name);
+  this -> setHealth(h);
+  this -> setAttack(a);
+  this -> setDefense(d);
 }
 
 int Item::getHealth(){
@@ -64,11 +50,11 @@ void Item::setAttack(int inp) : attack(inp){
 void Item::setDefense(int inp) : defense(inp){
 
 }
-/*
+
 bool Item::triggerEvent(Object* obj){
   Player player = dynamic_cast<Player *>(obj);
   if(player == NULL) return false;
   player -> addItem(this);
 }
-*/
+
 
