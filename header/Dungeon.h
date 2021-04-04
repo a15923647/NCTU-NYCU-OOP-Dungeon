@@ -16,11 +16,12 @@ using namespace std;
 class Dungeon{
 private:
     Player player;
+    Record record;
     vector<Room> rooms;
 public:
     Dungeon();
     /* Create a new player, and give him/her basic status */
-    void createPlayer();
+    void createPlayer(string name);
 
     /* Create a map, which include several different rooms */
     void createMap();

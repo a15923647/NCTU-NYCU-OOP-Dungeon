@@ -1,7 +1,8 @@
 #include "Record.h"
 #include <assert.h>
-/*
- */
+#define ROOM_FILE_PRE "roomFile"
+#define PLAYER_FILE_PRE "playerFile"
+
 Record::Record(){
 
 }
@@ -10,10 +11,10 @@ void Record::savePlayer(Player* player, ofstream& playerFile){
   player -> listMember(playerFile);
 }
 
-void Record::saveRoom(vector<Room>& roomList, ofsteram& fout){
-  fout << roomList.size();
+void Record::saveRoom(vector<Room>& roomList, ofstream& roomFile){
+  roomFile << roomList.size();
   for(int i = 0; i < roomList.size(); i++){
-    roomList[i].listMember(fout);
+    roomList[i].listMember(roomFile);
   }
 }
 
@@ -60,10 +61,33 @@ void Record::loadRoom(vector<Room>& roomList, ifstream& roomFile){
   map.close();
 }
 
-void Record::saveToFile(Player* player, vector<Room>&){
-
+void Record::saveToFile(Player* player, vector<Room>& roomList){
+  ofstream roomFile( ROOM_FILE_PRE + player->getName() );
+  this -> saveRoom( roomList, roomFile );
+  ofstream playerFile( PLAYER_FILE_PRE + player->getName() );
+  this -> savePlayer( player, playerFile );
+  roomFile.close();
+  playerFile.close();
 }
 
-void Record::loadFromFile(Player* player, vector<Room>&){
+bool Record::loadFromFile(Player* player, vector<Room>&){
+  string pName;
+  cout << "Player name: ";
+  cin >> pName;
 
+  ifstream roomFile( ROOM_FILE_PRE + pName );
+  if(roomFile.good())
+    this -> loadRoom( roomList, roomFile );
+  else
+    cerr << "open roomFile fail\n", exit(0);
+
+  ifstream playerFile( PLAYER_FILE_PRE + pName );
+  if(playerFile.good())
+    this -> loadPlayer( player, playerFile );
+  else
+    cerr << "open playerFile fail\n", exit(0);
+
+  roomFile.close();
+  playerFile.close();
+  return true;//sucess
 }

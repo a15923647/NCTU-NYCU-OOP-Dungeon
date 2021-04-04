@@ -24,10 +24,10 @@ void Player::increaseStates(int hpInc, int atkInc, int defInc){
 }
 
 bool Player::triggerEvent(Object* obj){
-  Player* ply = dynamic_cast<Item*>(obj);
+  Player* player = dynamic_cast<Player*>(obj);
   if(ply == NULL) return false;
   //open chest
-  this -> addItem(obj);
+  cout << player;
   return true;
 }
 

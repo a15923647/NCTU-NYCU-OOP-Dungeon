@@ -28,7 +28,7 @@ private:
 public:
     Record();
     void saveToFile(Player*, vector<Room>&);
-    void loadFromFile(Player*, vector<Room>&);
+    bool loadFromFile(Player*, vector<Room>&);
 
 };
 
