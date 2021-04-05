@@ -1,10 +1,13 @@
 #include "Monster.h"
 #include <stdlib.h>
-Monster::Monster() : setGameCharacter("default_monster", "monster", 10, 10, 10){
-
+#include <fstream>
+Monster::Monster() {
+  this -> setGameCharacter("default_monster", "monster", 10, 10, 10);
 }
-Monster::Monster(string name, int hp, int atk, int def) : 
-  setGameCharacter(name, "monster", hp, atk, def) {}
+
+Monster::Monster(string name, int hp, int atk, int def){
+  this -> setGameCharacter(name, "monster", hp, atk, def);
+}
 
 bool Monster::triggerEvent(Object* obj){
   //implement combat system
@@ -12,7 +15,7 @@ bool Monster::triggerEvent(Object* obj){
   Player *player = dynamic_cast<Player*>(obj);
   if(player == NULL) return false;
 
-  cout << "Encounter monster: " << this->getName << endl;
+  cout << "Encounter monster: " << this->getName() << endl;
   cout << "Select your choice: " << "0 : attack\n1 : retreat and go back to the previous room\n";
   cout << "Your choice: \n";
   string choice = "";
@@ -53,7 +56,7 @@ void Monster::listMember(ofstream& roomFile){
   roomFile << this -> getDefense() << endl;
 }
 
-override static void Monster::loadMember(ifstream& roomFile){
+void Monster::loadMember(ifstream& roomFile){
   int mh, ch, atk, def;
   string name;
   roomFile >> name >> mh >> ch >> atk >> def;

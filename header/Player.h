@@ -2,6 +2,7 @@
 #define PLAYER_H_INCLUDED
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include "GameCharacter.h"
@@ -9,8 +10,6 @@
 #include "Item.h"
 
 using namespace std;
-
-class Item;
 
 class Player: public GameCharacter
 {
@@ -29,6 +28,8 @@ public:
     /* In Player, this function should show the     */
     /* status of player.                            */
     bool triggerEvent(Object*);
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
 
     /* Set & Get function*/
     void setCurrentRoom(Room*);
@@ -37,7 +38,7 @@ public:
     Room* getCurrentRoom();
     Room* getPreviousRoom();
     vector<Item> getInventory();
-    ostream& operator << (ostream& pre, const Player& ply);
+    friend ostream& operator <<(ostream& , const Player& );
 };
 
 #endif // PLAYER_H_INCLUDED

@@ -12,6 +12,17 @@ void Dungeon::createPlayer(string name){
   this -> player.setPreviousRoom( &(this->rooms[0]) );
 }
 
+string split_first(string& str){
+  int i = 0;
+  for(i = 0; i < str.length() && str[i] != ' ' ; i++);
+
+  string res = str.substr( 0, i );
+  if(str[i+1]) str = str.substr( i + 1 );
+  else str = "";
+
+  return res;
+}
+
 void Dungeon::createMap(){
   ifstream map("map");
   if(!map.good()){//format chk?
@@ -47,24 +58,26 @@ void Dungeon::createMap(){
   int sp_cnt = 0;
   vector<Item> cmd;
   cmd.clear();
+  NPC* new_npc;
   while(getline(npc, inp_line)){
     for(sp_cnt = 0; sp_cnt < inp_line.length() && inp_line[sp_cnt] != ' '; sp_cnt++);
     
     if(sp_cnt == 0){
       //store cmd
       //consider the first NPC
-      if(cmd.size() != 0) rooms[ridx].objects.back() -> setCommodity(cmd);//set cmd of old npc
+      if(cmd.size() != 0) 
+        new_npc -> setCommodity(cmd);//set cmd of old npc
 
       cmd.clear();
 
       name = split_first( inp_line );
       ridx = atoi( split_first( inp_line ).c_str() );
 
-      NPC* new_npc = new NPC();
-      this -> rooms[ridx].objects.push_back( new_npc );
+      new_npc = new NPC;
+      this -> rooms[ridx].getObjects().push_back( new_npc );
     }
     else if(sp_cnt == 2){
-      new_npc -> script += inp_line.substr(2) + "\n";
+      new_npc -> setScript( new_npc->getScript() + inp_line.substr(2) + "\n" );
     }
     else if(sp_cnt == 4){
       string itmName;
@@ -81,28 +94,17 @@ void Dungeon::createMap(){
   }
   //load Monster
   ifstream monster("Monster");
-  while(!monster.eof){
+  while(!monster.eof()){
     int h, a, d;
     monster >> ridx >> name >> h >> a >> d;
     Monster* new_mon = new Monster(name, h, a, d);
-    this -> rooms[ridx].objects.push_back( new_mon );
+    this -> rooms[ridx].getObjects().push_back( new_mon );
   }
 }
 
-string split_first(string& str){
-  int i = 0;
-  for(i = 0; i < str.length() && str[i] != ' ' ; i++);
-
-  string res = str.substr( 0, i );
-  if(str[i+1]) str = str.substr( i + 1 );
-  else str = "";
-
-  return res;
-}
-
 void Dungeon::handleMovement(){
-  Room* cur = this -> player -> getCurrentRoom();
-  Room* pre = this -> player -> getPreviousRoom();
+  Room* cur = this -> player.getCurrentRoom();
+  Room* pre = this -> player.getPreviousRoom();
 
   Room* u = cur -> getUpRoom();
   Room* d = cur -> getDownRoom();
@@ -112,7 +114,7 @@ void Dungeon::handleMovement(){
   string ans = "";
 
   while(ans != "U" || ans != "D" || ans != "L" || ans != "R"){
-    cout << "which room you want to go?\n"
+    cout << "which room you want to go?\n";
     if(u != NULL) cout << "Up: U" << endl;
     if(d != NULL) cout << "Down: D" << endl;
     if(l != NULL) cout << "Left: L" << endl;
@@ -120,10 +122,10 @@ void Dungeon::handleMovement(){
     cin >> ans;
   }
 
-  if(ans == "U") player -> changeRoom( u );
-  if(ans == "D") player -> changeRoom( d );
-  if(ans == "L") player -> changeRoom( l );
-  if(ans == "R") player -> changeRoom( r );
+  if(ans == "U") player.changeRoom( u );
+  if(ans == "D") player.changeRoom( d );
+  if(ans == "L") player.changeRoom( l );
+  if(ans == "R") player.changeRoom( r );
   
 }
 
@@ -159,7 +161,7 @@ void Dungeon::startGame(){
     this -> createPlayer(name);
   }
   else if(choice == 2){
-    record -> loadFromFile( &(this->player), this->rooms )
+    record.loadFromFile( &(this->player), this->rooms );
   }
   else if(choice == 3)
     exit(0);
@@ -186,7 +188,7 @@ void Dungeon::chooseAction(vector<Object*> objects){
       this -> player.triggerEvent( &(this->player) );
       break;
     case 2:
-      this -> handleMovement( objects );
+      this -> handleMovement();
       break;
     case 3:
       this -> handleCommunicate( objects );
@@ -215,7 +217,7 @@ void Dungeon::handleCommunicate(vector<Object*> objects){
       NPC* nnpc = dynamic_cast<NPC*>( objects[i] );
       if(nnpc != NULL)
         npc_list.push_back( nnpc );
-      cout << npc_list.size() << ": " << nnpc->getName << endl;
+      cout << npc_list.size() << ": " << nnpc->getName() << endl;
     }
   }
   
@@ -228,7 +230,7 @@ void Dungeon::handleCommunicate(vector<Object*> objects){
   cout << "Which one do you want to talk to?";
   cin >> choice;
   if(choice > 0 && choice <= npc_list.size()){
-    npc_list[i] -> triggerEvent( &(this->player) );
+    npc_list[choice] -> triggerEvent( &(this->player) );
   }
   else{
     cout << "invalid choice" << endl;
@@ -242,7 +244,7 @@ void Dungeon::handleAttack(vector<Object*> objects){
     if(objects[i]->getTag() == "monster"){
       Monster* nmon = dynamic_cast<Monster*>( objects[i] );
       if(nmon != NULL)
-        monster_list.pushback( nmon );
+        monster_list.push_back( nmon );
       cout << monster_list.size() << ": " << nmon->getName() << endl;
     }
   }
@@ -256,7 +258,7 @@ void Dungeon::handleAttack(vector<Object*> objects){
   cout << "Which monster you want to defeat?";
   cin >> choice;
   if(choice > 0 && choice <= monster_list.size()){
-    monster_list[i] -> triggerEvent( &(this->player) );
+    monster_list[choice] -> triggerEvent( &(this->player) );
   }
   else{
     cout << "invalid choice" << endl;
@@ -270,7 +272,7 @@ void Dungeon::handleExplore(vector<Object*> objects){
     if(objects[i]->getTag() == "item"){
       Item* nitm = dynamic_cast<Item*>( objects[i] );
       if(nitm != NULL)
-        item_list.pushback( nitm );
+        item_list.push_back( nitm );
       cout << item_list.size() << ": " << nitm->getName() << endl;
     }
   }
@@ -284,33 +286,22 @@ void Dungeon::handleExplore(vector<Object*> objects){
   cout << "Which treasure you want to pick up?";
   cin >> choice;
   if(choice > 0 && choice <= item_list.size()){
-    item_list[i] -> triggerEvent( &(this->player) );
+    item_list[choice] -> triggerEvent( &(this->player) );
   }
   else{
     cout << "invalid choice" << endl;
   }
 }
 
-void Dungeon::encItem(Object* obj){
-  Item* item = dynamic_cast<Item*>(obj);
-  if(item == NULL) 
-    cerr << "object fail to cast to item in endItem\n", exit(0);
-  
-  string choice = "";
-  while(choice != "y" && choice != "n"){
-    cout << "Find a chest in the room." << endl;
-    cout << "Do you want to pick it up? (y/n): ";
-    cin >> choice;
-  }
-
-  if(choice == "y") item -> triggerEvent( &(this -> player) );
-}
-
-
-
 bool Dungeon::checkGameLogic(){
-  if((this->player).checkIsDead()) cout << "Lose\n", return false;
-  if((this->player).getCurrentRoom -> getIsExit()) cout << "found exit", return false;
+  if((this->player).checkIsDead()){
+    cout << "Lose\n";
+    return false;
+  }
+  if((this->player).getCurrentRoom() -> getIsExit()) {
+    cout << "found exit";
+    return false;
+  }
   //if((this->boss).checkIsDead()) return false; implement later
   return true;
 }

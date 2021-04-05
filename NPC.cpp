@@ -1,11 +1,15 @@
 #include "NPC.h"
 #include <climits>
 #include <stdlib.h>
-NPC::NPC() : GameCharacter(name, "NPC", INT_MAX, INT_MAX){
+NPC::NPC(){
+  this -> setGameCharacter("default_NPC", "NPC", INT_MAX, INT_MAX, INT_MAX);
 }
 
-NPC::NPC(string name, string script, vector<Item> commodity) \
-  : GameCharacter(name, "NPC". INT_MAX, INT_MAX), script(script), commodity(commodity){};
+NPC::NPC(string name, string script, vector<Item> commodity){
+  this -> setGameCharacter(name, "NPC", INT_MAX, INT_MAX, INT_MAX);
+  this -> script = script;
+  this -> commodity = commodity;
+}
 
 void NPC::listCommodity(){
   cout << "Commodity list: \n";
@@ -24,16 +28,16 @@ bool NPC::triggerEvent(Object* obj){
   while(!sucess){
     cin >> query;
     for(int i = 0; i < commodity.size(); i++){
-        if(query == commodity.at(i)->getName()){
+        if(query == commodity.at(i).getName()){
             player->addItem(commodity.at(i));
-            this -> commodity.erase(i);
+            this -> commodity.erase( this->commodity.begin() + i );
         }
     }
   }
   return true;
 }
 
-override void NPC::listMember(ofstream& roomFile){
+void NPC::listMember(ofstream& roomFile){
   roomFile << this -> getScript() << endl;
   roomFile << this -> getMaxHealth() << " ";
   roomFile << this -> getCurrentHealth() << " ";
@@ -48,7 +52,7 @@ override void NPC::listMember(ofstream& roomFile){
   }
 }
 
-override static void NPC::loadMember(ifstream& roomFile){
+void NPC::loadMember(ifstream& roomFile){
   string name, script;
   int mh, ch, atk, def;
   getline(roomFile, script);
@@ -60,8 +64,10 @@ override static void NPC::loadMember(ifstream& roomFile){
   this -> setDefense(def);
   this -> setName(name);
 }
-void NPC::setScript(string inp) : script(inp){}
+void NPC::setScript(string inp){
+  this -> script = inp;
+}
 
-void NPC::getCommodity(){
+vector<Item> NPC::getCommodity(){
   return this -> commodity;
 }

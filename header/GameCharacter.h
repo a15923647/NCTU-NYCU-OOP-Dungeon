@@ -19,12 +19,16 @@ public:
     GameCharacter(string,string,int,int,int);
     bool checkIsDead();
     int takeDamage(int);
+    bool triggerEvent(Object* );
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
 
     /* Set & Get function*/
     void setMaxHealth(int);
     void setCurrentHealth(int);
     void setAttack(int);
     void setDefense(int);
+    void setGameCharacter(string, string , int, int , int);
     int getMaxHealth();
     int getCurrentHealth();
     int getAttack();

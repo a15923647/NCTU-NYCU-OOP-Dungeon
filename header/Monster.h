@@ -20,6 +20,8 @@ public:
     /* In Monster, this function should deal with   */
     /* the combat system.                           */
     bool triggerEvent(Object*);
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
 };
 
 

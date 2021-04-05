@@ -2,6 +2,7 @@
 #define ROOM_H_INCLUDED
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include "Object.h"
@@ -23,6 +24,9 @@ public:
     Room(bool, int, vector<Object*>);
     bool popObject(Object*); /*pop out the specific object, used when the interaction is done*/
     // e.g. monster is dead, NPC leave...
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
+    bool triggerEvent(Object* );
 
     /* Set & Get function*/
     void setUpRoom(Room*);
@@ -39,8 +43,6 @@ public:
     Room* getDownRoom();
     Room* getLeftRoom();
     Room* getRightRoom();
-
-    ostream& operator << (ostream& , Room&);
 };
 
 #endif // ROOM_H_INCLUDED

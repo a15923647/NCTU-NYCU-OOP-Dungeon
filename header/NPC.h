@@ -24,6 +24,8 @@ public:
     /* In NPC, this function should deal with the   */
     /* transaction in easy implementation           */
     bool triggerEvent(Object*);
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
 
     /* Set & Get function*/
     void setScript(string);

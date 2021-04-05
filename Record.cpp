@@ -1,5 +1,7 @@
 #include "Record.h"
 #include <assert.h>
+#include <fstream>
+#include <vector>
 #define ROOM_FILE_PRE "roomFile"
 #define PLAYER_FILE_PRE "playerFile"
 
@@ -11,14 +13,14 @@ void Record::savePlayer(Player* player, ofstream& playerFile){
   player -> listMember(playerFile);
 }
 
-void Record::saveRoom(vector<Room>& roomList, ofstream& roomFile){
+void Record::saveRooms(vector<Room>& roomList, ofstream& roomFile){
   roomFile << roomList.size();
   for(int i = 0; i < roomList.size(); i++){
     roomList[i].listMember(roomFile);
   }
 }
 
-void Record::loadPlayer(Player* player, ifstream& playerFile, vecotr<Room>& roomList){
+void Record::loadPlayer(Player* player, ifstream& playerFile, vector<Room>& roomList){
   int cur, pre;
   playerFile >> cur >> pre;
   player -> loadMember(playerFile);
@@ -29,7 +31,7 @@ void Record::loadPlayer(Player* player, ifstream& playerFile, vecotr<Room>& room
 
 
 
-void Record::loadRoom(vector<Room>& roomList, ifstream& roomFile){
+void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
 /*
   create room first
   then connect each of them by linked list
@@ -70,20 +72,20 @@ void Record::saveToFile(Player* player, vector<Room>& roomList){
   playerFile.close();
 }
 
-bool Record::loadFromFile(Player* player, vector<Room>&){
+bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   string pName;
   cout << "Player name: ";
   cin >> pName;
 
   ifstream roomFile( ROOM_FILE_PRE + pName );
   if(roomFile.good())
-    this -> loadRoom( roomList, roomFile );
+    this -> loadRooms( roomList, roomFile );
   else
     cerr << "open roomFile fail\n", exit(0);
 
   ifstream playerFile( PLAYER_FILE_PRE + pName );
   if(playerFile.good())
-    this -> loadPlayer( player, playerFile );
+    this -> loadPlayer( player, playerFile, roomList );
   else
     cerr << "open playerFile fail\n", exit(0);
 

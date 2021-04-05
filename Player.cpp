@@ -1,7 +1,6 @@
 #include "Player.h"
 #define min(a,b) ((a) < (b)) ? (a) : (b)
 Player::Player() : GameCharacter("hahaha", "player", 10, 10, 10){
-
 }
 
 Player::Player(string name, int hp, int atk, int def) : 
@@ -18,14 +17,14 @@ void Player::increaseStates(int hpInc, int atkInc, int defInc){
   int def = this->getDefense();
   int mhp = this->getMaxHealth();
 
-  this -> setHealth( min(hp + hpInc, mhp) );
+  this -> setCurrentHealth( min(hp + hpInc, mhp) );
   this -> setAttack( atk + atkInc );
   this -> setDefense( def + defInc );
 }
 
 bool Player::triggerEvent(Object* obj){
   Player* player = dynamic_cast<Player*>(obj);
-  if(ply == NULL) return false;
+  if(player  == NULL) return false;
   //open chest
   cout << player;
   return true;
@@ -33,7 +32,7 @@ bool Player::triggerEvent(Object* obj){
 
 ostream& operator << (ostream& outputStream, const Player& ply){
   //print player status
-  outputStream << "HP: " << this->getHealth() << endl;
+  outputStream << "HP: " << this->getCurrentHealth() << endl;
   outputStream << "Attack: " << this->getAttack() << endl;
   outputStream << "Defense: " << this->getDefense()  << endl;
   
@@ -62,17 +61,17 @@ void Player::setInventory(vector<Item> v){
 
 
 void Player::listMember(ofstream& playerFile){
-  playerFile << this -> currentRoom.getIndex() << " ";
-  playerFile << this -> previousRoom.getIndex() << endl;
+  playerFile << this -> currentRoom->getIndex() << " ";
+  playerFile << this -> previousRoom->getIndex() << endl;
   vector<Item> inventory = this -> getInventory();
   int size = inventory.size();
   playerFile << size << endl;
   for(int i = 0; i < size; i++){
-    inventory[i].listMember();
+    inventory[i].listMember( playerFile );
   }
 }
 
-override static void Player::loadMember(ifstream& playerFile){
+void Player::loadMember(ifstream& playerFile){
   this -> inventory.clear();
   int n;
   playerFile >> n;

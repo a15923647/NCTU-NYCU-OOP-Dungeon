@@ -26,8 +26,8 @@ public:
     string getName();
     string getTag();
     //for save every object
-    virtual void listMember(ofstream& fout) = 0;
-    virtual static void loadMember(ifstream& ) = 0;
+    virtual void listMember(ofstream& ) = 0;
+    virtual void loadMember(ifstream& ) = 0;
 };
 
 #endif // OBJECT_H_INCLUDED

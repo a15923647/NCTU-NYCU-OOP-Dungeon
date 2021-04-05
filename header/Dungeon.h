@@ -48,6 +48,16 @@ public:
 
     /* Deal with the whole game process */
     void runDungeon();
+
+    void showWelcomeMenu();
+
+    void handleCommunicate(vector<Object*>);
+
+    void handleAttack(vector<Object*>);
+
+    void handleExplore(vector<Object*>);
+
+
 };
 
 

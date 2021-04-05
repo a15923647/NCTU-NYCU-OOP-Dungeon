@@ -5,10 +5,8 @@
 #include <string>
 #include <vector>
 #include "Object.h"
-#include "Player.h"
 using namespace std;
 
-class Player;
 
 class Item: public Object
 {
@@ -23,6 +21,9 @@ public:
     /* pick up action. You should add status to the  */
     /* player.                                       */
     bool triggerEvent(Object*);
+
+    void listMember(ofstream& );
+    void loadMember(ifstream& );
 
     /* Set & Get function*/
     int getHealth();

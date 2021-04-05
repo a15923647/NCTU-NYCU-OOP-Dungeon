@@ -3,4 +3,4 @@
 # history:
 # 20210319 created by jzw
 
-g++ -I ./header -o main main.cpp
+g++ -I ./header -o run *.cpp

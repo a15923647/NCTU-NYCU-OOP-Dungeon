@@ -9,9 +9,8 @@
 
 
 using namespace std;
-
-int main(){
-    /*Dungeon dungeon = Dungeon();
-    dungeon.runDungeon();*/
+int main(void){
+    Dungeon dungeon = Dungeon();
+    dungeon.runDungeon();
     return 0;
 }
