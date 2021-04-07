@@ -5,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include <cstdlib>
 #include "Item.h"
 #include "Monster.h"
 #include "NPC.h"

@@ -6,7 +6,6 @@
 #include <vector>
 #include <fstream>
 #include "GameCharacter.h"
-#include "Player.h"
 #include "Item.h"
 
 using namespace std;

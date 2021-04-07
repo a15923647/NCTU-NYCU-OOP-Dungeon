@@ -30,15 +30,15 @@ bool Player::triggerEvent(Object* obj){
   return true;
 }
 
-ostream& operator << (ostream& outputStream, const Player& ply){
+ostream& operator << (ostream& outputStream, Player& ply){
   //print player status
-  outputStream << "HP: " << this->getCurrentHealth() << endl;
-  outputStream << "Attack: " << this->getAttack() << endl;
-  outputStream << "Defense: " << this->getDefense()  << endl;
+  outputStream << "HP: " << ply.getCurrentHealth() << endl;
+  outputStream << "Attack: " << ply.getAttack() << endl;
+  outputStream << "Defense: " << ply.getDefense()  << endl;
   
   outputStream << "inventory: " << endl;
-  for(int i = 0; i < inventory.size(); i++){
-    outputStream << inventory.at(i).getName() << endl;
+  for(int i = 0; i < ply.getInventory().size(); i++){
+    outputStream << ply.getInventory().at(i).getName() << endl;
   }
 }
 
@@ -81,4 +81,16 @@ void Player::loadMember(ifstream& playerFile){
     playerFile >> tag >> name >> h >> a >> d;
     inventory.push_back( Item(name, h, a, d) );
   }
+}
+
+vector<Item> Player::getInventory(){
+  return this -> inventory;
+}
+
+Room* Player::getCurrentRoom(){
+  return this ->  currentRoom;
+}
+
+Room* Player::getPreviousRoom(){
+  return this -> previousRoom;
 }

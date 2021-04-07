@@ -1,6 +1,4 @@
 #include "Monster.h"
-#include <stdlib.h>
-#include <fstream>
 Monster::Monster() {
   this -> setGameCharacter("default_monster", "monster", 10, 10, 10);
 }

@@ -1,0 +1,35 @@
+digraph "source tree" {
+    overlap=scale;
+    size="8,10";
+    ratio="fill";
+    fontsize="16";
+    fontname="Helvetica";
+	clusterrank="local";
+	"Room.h" -> "NPC.h"
+	"Player.h" -> "Item.h"
+	"Monster.h" -> "Item.h"
+	"Dungeon.h" -> "Room.h"
+	"Dungeon.h" -> "Monster.h"
+	"Record.h" -> "Item.h"
+	"Monster.h" -> "Player.h"
+	"Room.h" -> "Monster.h"
+	"Record.h" -> "Room.h"
+	"Record.h" -> "Player.h"
+	"Dungeon.h" -> "Player.h"
+	"Dungeon.h" -> "Object.h"
+	"Item.h" -> "Player.h"
+	"NPC.h" -> "Item.h"
+	"Item.h" -> "Object.h"
+	"Player.h" -> "GameCharacter.h"
+	"Record.h" -> "NPC.h"
+	"GameCharacter.h" -> "Object.h"
+	"Room.h" -> "Item.h"
+	"Dungeon.h" -> "NPC.h"
+	"Record.h" -> "Monster.h"
+	"NPC.h" -> "GameCharacter.h"
+	"Dungeon.h" -> "Record.h"
+	"NPC.h" -> "Player.h"
+	"Room.h" -> "Object.h"
+	"Player.h" -> "Room.h"
+	"Monster.h" -> "GameCharacter.h"
+}

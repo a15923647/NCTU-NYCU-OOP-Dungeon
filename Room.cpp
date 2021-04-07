@@ -1,32 +1,11 @@
 #include "Room.h"
-#include "Monster.h"
-#include "Player.h"
-#include "NPC.h"
-#include "Item.h"
-#include <stdlib.h>
-#include <fstream>
-/*#define CREATE_OBJ(classid) switch(classid){\
-  case 0:\
-    (Monster*)obj = new Monster();\
-    break;\
-  case 1:\
-    (Player*)obj = new Player();\
-    break;\
-  case 2:\
-    (NPC*)obj = new NPC();\
-    break;\
-  case 3:\
-    (Item*)obj = new Item();\
-    break;\
-  case 4:\
-    (Room*)obj = new Room();\
-    break;\
-  case -1:\
-    return;\
-}*/
 
-Room::Room() : isExit(false), index(-1), objects(NULL){
-  
+
+//Room::Room() : isExit(false), index(-1), objects((vector<Object*>)(NULL)){
+Room::Room() : isExit(false), index(-1){
+  vector<Object*> tmp;
+  tmp.clear();
+  this -> objects = tmp;
 }
 
 int tag2classid(string tag){
@@ -40,12 +19,20 @@ int tag2classid(string tag){
 Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects){}
 
 void Room::listMember(ofstream& roomFile){
-  ofstream map = open("map", ios::out|ios::append);
+  ofstream map("map", ios::out|ios::app);
   map << this->getIndex() << " ";
-  map << (this->getUpRoom())->getIndex() == NULL ? -1 : this->upRoom->getIndex() << " ";
-  map << (this->getDownRoom())->getIndex() == NULL ? -1 : this->downRoom->getIndex()  << " ";
-  map << (this->getLeftRoom())->getIndex() == NULL ? -1 : this->leftRoom->getIndex() << " ";
-  map << (this->getRightRoom())->getIndex() == NULL ? -1 : this->rightRoom->getIndex() << endl;
+  int tmp = (this->getUpRoom())->getIndex() == (int)NULL ? -1 : this->upRoom->getIndex();
+  //map << (this->getUpRoom())->getIndex() == NULL ? -1 : this->upRoom->getIndex() << " ";
+  map << tmp << " ";
+  //map << (this->getDownRoom())->getIndex() == (int)NULL ? -1 : this->downRoom->getIndex()  << " ";
+  tmp = (this->getDownRoom())->getIndex() == (int)NULL ? -1 : this->downRoom->getIndex();
+  map << tmp << " ";
+  //map << (this->getLeftRoom())->getIndex() == (int)NULL ? -1 : this->leftRoom->getIndex() << " ";
+  tmp = (this->getLeftRoom())->getIndex() == (int)NULL ? -1 : this->leftRoom->getIndex();
+  map << tmp << " ";
+  //map << (this->getRightRoom())->getIndex() == (int)NULL ? -1 : this->rightRoom->getIndex() << endl;
+  tmp = (this->getRightRoom())->getIndex() == (int)NULL ? -1 : this->rightRoom->getIndex();
+  map << tmp << endl;
 
   map.close();
 
@@ -74,10 +61,12 @@ void Room::loadMember(ifstream& roomFile){
   int tmp, classid;
   roomFile >> tmp;
   this -> setIsExit(tmp);
-  for(roomFile >> classid; classid != -1; roomFile >> classid){
+  /*for(roomFile >> classid; classid != -1; roomFile >> classid){
     if(classid == 0) {
-      Monster* obj = new Monster();
-      obj->loadMember(roomFile);
+      Object* p = new Monster();
+      //this -> objects.push_back( new Monster() );
+      this -> objects.push_back( p );
+      this -> objects.back() ->loadMember(roomFile);
     }
     else if(classid == 1) {
       Player* obj = new Player();
@@ -96,27 +85,8 @@ void Room::loadMember(ifstream& roomFile){
       obj->loadMember(roomFile);
     }
     else if(classid == -1) return;
-    /*
-    case 0:
-      Monster* obj = new Monster();
-      break;
-    case 1:
-      Player* obj = new Player();
-      break;
-    case 2:
-      NPC* obj = new NPC();
-      break;
-    case 3:
-      Item* obj = new Item();
-      break;
-    case 4:
-      Room* obj = new Room();
-      break;
-    case -1:
-      return;
-    }*/
-    //obj->loadMember(roomFile);
-  }
+    
+  }*/
 }
 
 bool Room::popObject(Object* obj){

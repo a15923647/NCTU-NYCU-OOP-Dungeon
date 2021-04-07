@@ -6,7 +6,7 @@
 #include <vector>
 #include <exception>
 #include <fstream>
-#include <cstdlib>
+#include <stdlib.h>
 #include "Player.h"
 #include "Monster.h"
 #include "NPC.h"

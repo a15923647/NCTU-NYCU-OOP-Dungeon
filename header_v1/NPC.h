@@ -1,15 +1,11 @@
 #ifndef NPC_H_INCLUDED
 #define NPC_H_INCLUDED
 
-#define INT_MAX 2147483647
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include "GameCharacter.h"
-#include "Player.h"
-#include "Item.h"
 
 using namespace std;
 

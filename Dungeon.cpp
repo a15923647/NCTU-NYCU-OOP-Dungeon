@@ -1,5 +1,4 @@
 #include "Dungeon.h"
-#include <stdlib.h>
 //init -> choose action -> ck game logic -> end or choose action
 //init: createRoom -> createPlayer
 Dungeon::Dungeon(){

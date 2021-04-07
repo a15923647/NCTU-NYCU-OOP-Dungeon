@@ -1,6 +1,4 @@
 #include "NPC.h"
-#include <climits>
-#include <stdlib.h>
 NPC::NPC(){
   this -> setGameCharacter("default_NPC", "NPC", INT_MAX, INT_MAX, INT_MAX);
 }
@@ -70,4 +68,12 @@ void NPC::setScript(string inp){
 
 vector<Item> NPC::getCommodity(){
   return this -> commodity;
+}
+
+void NPC::setCommodity(vector<Item> cmt){
+  this -> commodity = cmt;
+}
+
+string NPC::getScript(){
+  return this -> script;
 }
