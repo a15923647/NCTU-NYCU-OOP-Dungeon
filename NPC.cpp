@@ -28,7 +28,7 @@ bool NPC::triggerEvent(Object* obj){
     for(int i = 0; i < commodity.size(); i++){
         if(query == commodity.at(i).getName()){
             player->addItem(commodity.at(i));
-            this -> commodity.erase( this->commodity.begin() + i );
+            this -> commodity.erase( this->commodity.begin() + i );//remove object
         }
     }
   }

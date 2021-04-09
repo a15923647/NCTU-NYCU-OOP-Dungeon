@@ -22,14 +22,6 @@ void Player::increaseStates(int hpInc, int atkInc, int defInc){
   this -> setDefense( def + defInc );
 }
 
-bool Player::triggerEvent(Object* obj){
-  Player* player = dynamic_cast<Player*>(obj);
-  if(player  == NULL) return false;
-  //open chest
-  cout << player;
-  return true;
-}
-
 ostream& operator << (ostream& outputStream, Player& ply){
   //print player status
   outputStream << "HP: " << ply.getCurrentHealth() << endl;
@@ -40,6 +32,14 @@ ostream& operator << (ostream& outputStream, Player& ply){
   for(int i = 0; i < ply.getInventory().size(); i++){
     outputStream << ply.getInventory().at(i).getName() << endl;
   }
+}
+
+bool Player::triggerEvent(Object* obj){
+  Player* player = dynamic_cast<Player*>(obj);
+  if(player  == NULL) return false;
+  //open chest
+  cout << player;
+  return true;
 }
 
 void Player::changeRoom(Room* next){

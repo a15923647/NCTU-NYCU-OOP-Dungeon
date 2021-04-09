@@ -1,0 +1,22 @@
+digraph cluster_0 {
+	graph [clusterrank=local,
+		fontname=Helvetica,
+		fontsize=16,
+		overlap=scale,
+		ratio=fill,
+		size="8,10"
+	];
+	"Room.h" -> "NPC.h";
+	"Room.h" -> "Item.h";
+	"Room.h" -> "Monster.h";
+	"NPC.h" -> "Player.h";
+	"NPC.h" -> "Item.h";
+	"Player.h" -> "Room.h";
+	"Player.h" -> "Item.h";
+	"Item.h" -> "Player.h";
+	"Monster.h" -> "Player.h";
+	"Monster.h" -> "Item.h";
+}
+digraph scc_map {
+	cluster_0;
+}
