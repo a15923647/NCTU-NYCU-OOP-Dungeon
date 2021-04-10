@@ -59,7 +59,8 @@ public:
     void handleAttack(Room*, vector<Object*>);
 
     void handleExplore(Room*, vector<Object*>);
-
+//DEBUG
+    void debug();
 
 };
 

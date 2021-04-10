@@ -1,0 +1,8 @@
+fix record room
+fix show player status
+record file format match
+ - monster
+ - npc
+ - player
+fix logic bug
+put treasure in room

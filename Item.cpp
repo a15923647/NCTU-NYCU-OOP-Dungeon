@@ -28,6 +28,8 @@ void Item::loadMember(ifstream& roomFile){
   this -> setHealth(h);
   this -> setAttack(a);
   this -> setDefense(d);
+  string fmt_alg;
+  getline( roomFile, fmt_alg);
 }
 
 int Item::getHealth(){

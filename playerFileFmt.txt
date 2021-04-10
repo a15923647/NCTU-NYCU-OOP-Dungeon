@@ -1,0 +1,5 @@
+cur_room_idx pre_room_idx
+name
+mh ch atk def
+noi
+Item listMember output

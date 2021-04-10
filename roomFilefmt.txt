@@ -1,0 +1,22 @@
+nor
+ridx
+isExit
+-1//endobjlist
+ridx
+classid
+noi//number of item
+object listMember output
+-1//endobjlist
+
+
+listMember output format
+NPC
+script
+
+ridx health attack defense
+
+Item
+item itm_name health attack defense
+
+Monster
+mon_name mh ch atk def

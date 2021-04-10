@@ -16,19 +16,26 @@ void NPC::listCommodity(){
   }
 }
 
-bool NPC::triggerEvent(Object* obj){
+bool NPC::triggerEvent(Object* obj){//change to select number
   Player* player = dynamic_cast<Player*>(obj);
   if(player == NULL) return false;
-  //call player's addItem to give the item to player'
+  //call player's addItem to give the item to player
+  for(int i = 0; i < this -> commodity.size(); i++){
+    cout << this -> commodity[i].getName() << endl;
+    #ifdef DEBUG
+	cout << "  health: " << this -> getHealth() << endl;
+    #endif	
+  }
   cout << "Choose the item you want: ";
   bool sucess = false;
   string query;
-  while(!sucess){
+  while(!sucess && this -> commodity.size() != 0){
     cin >> query;
     for(int i = 0; i < commodity.size(); i++){
         if(query == commodity.at(i).getName()){
-            player->addItem(commodity.at(i));
+            player->addItem( commodity.at(i) );
             this -> commodity.erase( this->commodity.begin() + i );//remove object
+			sucess = true;
         }
     }
   }
@@ -41,7 +48,7 @@ void NPC::listMember(ofstream& roomFile){
   roomFile << this -> getCurrentHealth() << " ";
   roomFile << this -> getAttack() << " ";
   roomFile << this -> getDefense() << " ";
-  roomFile << this -> getName() << " ";
+  roomFile << this -> getName() << endl;
   vector<Item> commodity = this -> getCommodity();
   int size = commodity.size();
   roomFile << size << endl;
@@ -51,16 +58,33 @@ void NPC::listMember(ofstream& roomFile){
 }
 
 void NPC::loadMember(ifstream& roomFile){
-  string name, script;
+  //DEBUG
+  cout << "load new NPC\n";
+  string name, script, tmp;
   int mh, ch, atk, def;
-  getline(roomFile, script);
+  getline(roomFile, tmp);
+  for(getline(roomFile, tmp); \
+      tmp != ""; \
+	  script += (tmp + "\n"), getline(roomFile, tmp));
+
   roomFile >> mh >> ch >> atk >> def >> name;
+  getline(roomFile, tmp);//format alignment
+  
   this -> setScript(script);
   this -> setMaxHealth(mh);
   this -> setCurrentHealth(ch);
   this -> setAttack(atk);
   this -> setDefense(def);
   this -> setName(name);
+  //load commodity
+  this -> commodity.clear();
+  int size;
+  roomFile >> size;
+  while(size--){
+    this -> commodity.push_back( Item() );
+	this -> commodity.back().loadMember( roomFile );
+  }
+  
 }
 void NPC::setScript(string inp){
   this -> script = inp;

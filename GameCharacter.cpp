@@ -10,6 +10,7 @@ GameCharacter::GameCharacter(string name, string tag, int health, int attack, in
   this -> currentHealth = health;
   this -> attack = attack;
   this -> defense = defense;
+  this -> maxHealth = 1000;
 }
 
 bool GameCharacter::checkIsDead(){

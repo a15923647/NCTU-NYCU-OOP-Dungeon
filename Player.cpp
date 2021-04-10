@@ -38,9 +38,10 @@ bool Player::triggerEvent(Object* obj){
   Player* player = dynamic_cast<Player*>(obj);
   if(player  == NULL) return false;
   //open chest
-  cout << player;
+  cout << *player;
   return true;
 }
+
 
 void Player::changeRoom(Room* next){
   this -> previousRoom = this -> currentRoom;
@@ -63,6 +64,11 @@ void Player::setInventory(vector<Item> v){
 void Player::listMember(ofstream& playerFile){
   playerFile << this -> currentRoom->getIndex() << " ";
   playerFile << this -> previousRoom->getIndex() << endl;
+  playerFile << this -> getName() << endl;
+  playerFile << this -> getMaxHealth() << " ";
+  playerFile << this -> getCurrentHealth() << " ";
+  playerFile << this -> getAttack() << " ";
+  playerFile << this -> getDefense() << endl;
   vector<Item> inventory = this -> getInventory();
   int size = inventory.size();
   playerFile << size << endl;
@@ -72,6 +78,14 @@ void Player::listMember(ofstream& playerFile){
 }
 
 void Player::loadMember(ifstream& playerFile){
+  string pName = "", fmt_alg;
+  getline( playerFile, pName );
+  
+  int mhp, chp, atk, def;
+  playerFile >> mhp >> chp >> atk >> def;
+  getline( playerFile, fmt_alg );
+  this -> setGameCharacter( pName , "player", chp, atk, def);
+  
   this -> inventory.clear();
   int n;
   playerFile >> n;
@@ -79,6 +93,7 @@ void Player::loadMember(ifstream& playerFile){
   int h, a, d;
   for(int i = 0; i < n; i++){
     playerFile >> tag >> name >> h >> a >> d;
+	getline( playerFile, fmt_alg );
     inventory.push_back( Item(name, h, a, d) );
   }
 }

@@ -1,5 +1,5 @@
 #include "Dungeon.h"
-#define DEBUG 1
+//#define DEBUG 1
 //init -> choose action -> ck game logic -> end or choose action
 //init: createRoom -> createPlayer
 Dungeon::Dungeon(){
@@ -49,23 +49,23 @@ void Dungeon::createMap(){
   //default exit is the last room
   this -> rooms[nor-1].setIsExit( true );
   map.close();
-  //load objects
+  //for loading objects
   string inp_line, name;
   int ridx = 0;
+  vector<Object*> objs_tmp[nor];
+  for(int i = 0; \
+      i < nor; \
+      objs_tmp[i] = this -> rooms[i].getObjects(), i++);//init all objs_tmp
+  
   //load NPC
   ifstream npc( "npc" );
   string script;
-  int sp_cnt = 0;
   vector<Item> cmd;
   cmd.clear();
   NPC* new_npc;
-  //DEBUG
-  #ifdef DEBUG
-	  //# of NPC
-	  int npc_cnt = 0;
-  #endif
-  vector<Object*> objs_tmp;
-  while(getline(npc, inp_line)){
+  
+  int sp_cnt = 0;
+  while(getline(npc, inp_line) && !npc.eof()){
     for(sp_cnt = 0; sp_cnt < inp_line.length() && inp_line[sp_cnt] == ' '; sp_cnt++);
     
     if(sp_cnt == 0){
@@ -77,22 +77,12 @@ void Dungeon::createMap(){
 
       name = split_first( inp_line );
       ridx = atoi( split_first( inp_line ).c_str() );
-      /*#ifdef DEBUG
-	  cout << "new npc's name: " << name << endl;
-	  cout << "new npc's room index: " << ridx << endl;
-	  #endif*/
       new_npc = new NPC;
-	  objs_tmp = this -> rooms[ridx].getObjects();
-      objs_tmp.push_back( new_npc );//undone+++++++++++++++++++++++++++++++++++++++
-	  /*#ifdef DEBUG
-	  npc_cnt++;//DEBUG
-	  #endif*/
+	  new_npc -> setName( name );
+      objs_tmp[ridx].push_back( new_npc );
     }
     else if(sp_cnt == 2){
       new_npc -> setScript( new_npc->getScript() + inp_line.substr(2) + "\n" );
-	  /*#ifdef DEBUG
-	  cout << new_npc -> getScript() << endl;
-	  #endif*/
     }
     else if(sp_cnt == 4){
       string itmName;
@@ -103,22 +93,77 @@ void Dungeon::createMap(){
       h = atoi( split_first( inp_line ).c_str() );
       a = atoi( split_first( inp_line ).c_str() );
       d = atoi( split_first( inp_line ).c_str() );
-
+      #ifdef DEBUG
+	  /*cout << "new Item" << endl;
+	  cout << "name: " << itmName << endl;
+	  cout << "health: " << h << endl;
+	  cout << "attack: " << a << endl;
+	  cout << "defense: " << d << endl;*/
+	  #endif
       cmd.push_back( Item(itmName, h, a, d) );
     }
   }
+  if(cmd.size() != 0) 
+        new_npc -> setCommodity(cmd);//set cmd of old npc
+
+  //load to room objects sucess
   
-  /*#ifdef DEBUG
-  cout << "number of npc: " << npc_cnt << endl;//DEBUG
-  #endif*/
   //load Monster
   ifstream monster("Monster");
-  while(!monster.eof()){
-    int h, a, d;
-    monster >> ridx >> name >> h >> a >> d;
-    Monster* new_mon = new Monster(name, h, a, d);
-    this -> rooms[ridx].getObjects().push_back( new_mon );
+  if(!monster.good()){
+    cerr << "open monster file fail.\nPlease ensure the file exists." << endl;
+	exit(0);
   }
+  
+  if(!monster.eof()) 
+    monster >> ridx;
+  while(!monster.eof() && ridx != -3){
+    int h, a, d;
+    monster >> name >> h >> a >> d;
+	
+    Monster* new_mon = new Monster(name, h, a, d);
+    objs_tmp[ridx].push_back( new_mon );
+	
+	monster >> ridx;
+  }
+  
+  //load treasure
+  int notr;//number of treasure
+  ifstream treasure("treasure");
+  treasure >> notr;
+  while(notr--){
+    string t_name, fmt_alg;
+	int t_h, t_a, t_d;
+	treasure >> ridx >> t_name >> t_h >> t_a >> t_d;
+	Item* nt = new Item( t_name, t_h, t_a, t_d );
+    objs_tmp[ridx].push_back( nt );
+	getline( treasure, fmt_alg );
+  }
+  
+  for(int i = 0; \
+      i < nor; \
+	  this -> rooms[i].setObjects( objs_tmp[i] ), i++);
+	  
+  #ifdef DEBUG
+  /*for(int i = 0; i < nor; i++){
+    cout << "room " << i << endl;
+	for(int j = 0; j < rooms[i].getObjects().size(); j++){
+		cout << rooms[i].getObjects()[j]->getName() << endl;
+	    NPC* dbg = dynamic_cast<NPC*>( rooms[i].getObjects()[j] );
+		if(dbg != NULL){
+	      cout << dbg->getScript() << endl;
+		  vector<Item> cmd_tmp = dbg->getCommodity();
+		  for(int i = 0; i < cmd_tmp.size(); i++)
+			  cout << cmd_tmp[i].getName() << endl;
+		}
+		Monster* dmon = dynamic_cast<Monster*>( rooms[i].getObjects()[j] );
+		if(dmon != NULL){
+		  cout << dmon->getCurrentHealth() << endl;
+		  
+		}
+	}
+  }*/
+  #endif
 }
 
 void Dungeon::handleMovement(){
@@ -187,9 +232,6 @@ void Dungeon::startGame(){
 }
 
 void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
-  #ifdef DEBUG
-  cout << "choose action objects size: " <<objects.size() << endl;
-  #endif
   int choice = -1;
   while(choice > 7 || choice < 1){
     cout << "choose your action" << endl;
@@ -201,6 +243,9 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
     cout << "5. explore treasure" << endl;
     cout << "6. save game" << endl;
     cout << "7. exit this game" << endl;
+	#ifdef DEBUG
+	cout << "8. debug" << endl;
+	#endif
     cout << "your choice: ";
     cin >> choice;
   }
@@ -214,6 +259,9 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
       break;
     case 3:
       this -> handleCommunicate( objects );
+	  #ifdef DEBUG
+	  this -> player.triggerEvent( &(this->player) );
+	  #endif
       break;
     case 4:
       this -> handleAttack( cur, objects );
@@ -228,27 +276,31 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
       cout << "bye" << endl;
       exit(0);
       break;
+	#ifdef DEBUG
+	case 8:
+	  this -> debug();
+	  break;
+	#endif
   }
 }
+
 
 void Dungeon::handleCommunicate(vector<Object*> objects){
   vector<NPC*> npc_list;
   npc_list.clear();
-  #ifdef DEBUG
-  cout << "room objects size: " << objects.size() << endl;
-  #endif
   for(int i = 0; i < objects.size(); i++){
 	#ifdef DEBUG
 	cout << objects[i] -> getName() << endl;
 	#endif
-    if(objects[i]->getTag() == "npc" ){
+    if(objects[i]->getTag() == "NPC" ){
 	  #ifdef DEBUG
 	  cout << objects[i] -> getName() << endl;
 	  #endif
       NPC* nnpc = dynamic_cast<NPC*>( objects[i] );
-      if(nnpc != NULL)
+      if(nnpc != NULL){
         npc_list.push_back( nnpc );
-      cout << npc_list.size() << ": " << nnpc->getName() << endl;
+        cout << npc_list.size() << ": " << nnpc->getName() << endl;
+	  }
     }
   }
   if(npc_list.size() == 0){
@@ -260,7 +312,7 @@ void Dungeon::handleCommunicate(vector<Object*> objects){
   cout << "Which one do you want to talk to?";
   cin >> choice;
   if(choice > 0 && choice <= npc_list.size()){
-    npc_list[choice] -> triggerEvent( &(this->player) );
+    npc_list[choice - 1] -> triggerEvent( &(this->player) );
   }
   else{
     cout << "invalid choice" << endl;
@@ -288,10 +340,10 @@ void Dungeon::handleAttack(Room* cur, vector<Object*> objects){
   cout << "Which monster you want to defeat?";
   cin >> choice;
   if(choice > 0 && choice <= monster_list.size()){
-    monster_list[choice] -> triggerEvent( &(this->player) );
-	if(monster_list[choice] -> checkIsDead())
+    monster_list[choice - 1] -> triggerEvent( &(this->player) );
+	if(monster_list[choice - 1] -> checkIsDead())
 	  //monster dead, pop object from room
-	  cur -> popObject( monster_list[choice] );
+	  cur -> popObject( monster_list[choice - 1] );
   }
   else{
     cout << "invalid choice" << endl;
@@ -319,8 +371,8 @@ void Dungeon::handleExplore(Room* cur, vector<Object*> objects){
   cout << "Which treasure you want to pick up?";
   cin >> choice;
   if(choice > 0 && choice <= item_list.size()){
-    item_list[choice] -> triggerEvent( &(this->player) );
-	cur -> popObject( item_list[choice] );//remove from room after being picked up
+    item_list[choice - 1] -> triggerEvent( &(this->player) );
+	cur -> popObject( item_list[choice - 1] );//remove from room after being picked up
   }
   else{
     cout << "invalid choice" << endl;
@@ -348,4 +400,14 @@ void Dungeon::runDungeon(){
     this -> chooseAction( cur, cur->getObjects() );
   }
 
+}
+
+void Dungeon::debug(){
+  cout << "about room: " << endl;
+  Room* cur = this -> player.getCurrentRoom();
+  vector<Object*> robjs = cur -> getObjects();
+  cout << "objects:" << endl;
+  for(int i = 0; i < robjs.size(); i++){
+    cout << robjs[i]->getName() << endl;
+  }
 }

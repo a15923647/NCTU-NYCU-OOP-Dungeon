@@ -1,2 +1,5 @@
 boss
-default files
+exp system
+treasure
+monster drop
+recover after combat
