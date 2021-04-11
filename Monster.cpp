@@ -9,6 +9,18 @@ Monster::Monster(string name, int hp, int atk, int def){
   this -> setMaxHealth(1000);
 }
 
+ostream& operator << (ostream& outputStream, Monster& mon){
+  //print player status
+  outputStream << "HP: " << mon.getCurrentHealth() << "/" << mon.getMaxHealth() << endl;
+  outputStream << "Attack: " << mon.getAttack() << endl;
+  outputStream << "Defense: " << mon.getDefense()  << endl;
+  
+  /*outputStream << "inventory: " << endl;
+  for(int i = 0; i < mon.getInventory().size(); i++){
+    outputStream << mon.getInventory().at(i).getName() << endl;
+  }*/
+}
+
 bool Monster::triggerEvent(Object* obj){
   //implement combat system
   //attack or retreat
@@ -32,18 +44,36 @@ bool Monster::triggerEvent(Object* obj){
       break;
     }
     //combat system
+	srand( time(NULL) );
+	double m_dodge_rate = 0.9;//maybe create a member in GameCharacter
     //player attack
-    if(player->getAttack() > this->getDefense()){
-      this -> takeDamage( player->getAttack() );
+    if(player->getAttack() > this->getDefense() ){
+      if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
+        this -> takeDamage( player->getAttack() );
+      else
+        cout << "You sucessfully dodge attack" << endl;
     }
 
     if(this -> checkIsDead()){
+      cout << "victory" << endl;
       break;
     }
     //monster attack
-    if( this -> getAttack() > player -> getDefense() ){
-      player -> takeDamage( this->getAttack() );
+	double p_dodge_rate = 0.5;
+    if( this -> getAttack() > player -> getDefense()){
+      if((double)rand() / (RAND_MAX + 1.0) > p_dodge_rate)
+        player -> takeDamage( this->getAttack() );
+      else
+        cout << this -> getName() << " sucessfully dodge your attac\n";
     }
+	
+	cout << "Monster state" << endl;
+    cout << this -> getName() << endl;
+	player -> triggerEvent( player );
+    
+    cout << "Player state" << endl;
+    cout << player -> getName() << endl;
+    cout << *this;
   }
 
 }

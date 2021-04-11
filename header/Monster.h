@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 #include "GameCharacter.h"
 #include "Player.h"
 #include "Item.h"
@@ -24,6 +26,8 @@ public:
     bool triggerEvent(Object*);
     void listMember(ofstream& );
     void loadMember(ifstream& );
+	
+	friend ostream& operator <<(ostream& , const Monster& );
 };
 
 

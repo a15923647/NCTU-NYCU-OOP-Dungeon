@@ -24,7 +24,7 @@ void Player::increaseStates(int hpInc, int atkInc, int defInc){
 
 ostream& operator << (ostream& outputStream, Player& ply){
   //print player status
-  outputStream << "HP: " << ply.getCurrentHealth() << endl;
+  outputStream << "HP: " << ply.getCurrentHealth() << "/" << ply.getMaxHealth() << endl;
   outputStream << "Attack: " << ply.getAttack() << endl;
   outputStream << "Defense: " << ply.getDefense()  << endl;
   

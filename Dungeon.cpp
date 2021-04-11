@@ -281,6 +281,10 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
 	  this -> debug();
 	  break;
 	#endif
+	default:
+	  cout << "Cannot recognize your choice.\n" << "Please select again.\n";
+      cin >> choice;
+      break;
   }
 }
 
