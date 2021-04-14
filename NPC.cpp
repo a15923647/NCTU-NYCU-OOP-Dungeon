@@ -58,8 +58,6 @@ void NPC::listMember(ofstream& roomFile){
 }
 
 void NPC::loadMember(ifstream& roomFile){
-  //DEBUG
-  cout << "load new NPC\n";
   string name, script, tmp;
   int mh, ch, atk, def;
   getline(roomFile, tmp);

@@ -6,7 +6,7 @@
 #include <vector>
 #include <exception>
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include "Player.h"
 #include "Monster.h"
 #include "NPC.h"
@@ -43,7 +43,7 @@ public:
     /* including showing the action list */
     /* that player can do at that room   */
     /* and dealing with player's input   */
-    void chooseAction(vector<Object*>);
+    void chooseAction(Room* ,vector<Object*>);
 
     /* Check whether the game should end or not */
     /* Including player victory, or he/she dead */
@@ -56,10 +56,11 @@ public:
 
     void handleCommunicate(vector<Object*>);
 
-    void handleAttack(vector<Object*>);
+    void handleAttack(Room*, vector<Object*>);
 
-    void handleExplore(vector<Object*>);
-
+    void handleExplore(Room*, vector<Object*>);
+//DEBUG
+    void debug();
 
 };
 

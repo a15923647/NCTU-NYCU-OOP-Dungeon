@@ -5,6 +5,9 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <cstdlib>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "Item.h"
 #include "Monster.h"
 #include "NPC.h"

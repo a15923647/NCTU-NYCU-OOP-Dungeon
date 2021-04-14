@@ -1,2 +1,2 @@
-break Dungeon::handleAttack(Room*, std::vector<Object*, std::allocator<Object*> >)
+break Record::loadFromFile(Player*, std::vector<Room, std::allocator<Room> >&)
 

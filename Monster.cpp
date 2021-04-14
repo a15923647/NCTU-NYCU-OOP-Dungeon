@@ -45,7 +45,7 @@ bool Monster::triggerEvent(Object* obj){
     }
     //combat system
 	srand( time(NULL) );
-	double m_dodge_rate = 0.9;//maybe create a member in GameCharacter
+	double m_dodge_rate = 0.5;//maybe create a member in GameCharacter
     //player attack
     if(player->getAttack() > this->getDefense() ){
       if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
@@ -67,13 +67,13 @@ bool Monster::triggerEvent(Object* obj){
         cout << this -> getName() << " sucessfully dodge your attac\n";
     }
 	
-	cout << "Monster state" << endl;
+	  cout << "Monster state" << endl;
     cout << this -> getName() << endl;
-	player -> triggerEvent( player );
+	  cout << *this;
     
     cout << "Player state" << endl;
     cout << player -> getName() << endl;
-    cout << *this;
+    player -> triggerEvent( player );
   }
 
 }

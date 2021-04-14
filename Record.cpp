@@ -96,12 +96,36 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
 }
 
 void Record::saveToFile(Player* player, vector<Room>& roomList){
-  string rmf = ROOM_FILE_PRE + player->getName();
+  string subdir = "record";
+  create_dir_ifnext( subdir );
+  subdir = subdir + '/' + player->getName();
+  create_dir_ifnext( subdir );
+  
+  time_t now = time( 0 );
+  string tim( ctime(&now) );
+  for(int i = 0; i < tim.size(); i++)
+    if(tim[i] == ' ')
+      tim[i] = '_';
+    else if(tim[i] == ':')
+      tim[i] = '-';
+  
+  string rmf = subdir + '/' + ROOM_FILE_PRE + '_' + tim;
+  rmf = rmf.substr( 0, rmf.length()-1 );
   ofstream roomFile( rmf.c_str() );
+  if(!roomFile){
+    roomFile.open(rmf.c_str(), std::fstream::trunc);
+  }
+  
   this -> saveRooms( roomList, roomFile );
   
-  string pf = PLAYER_FILE_PRE + player->getName();
+  string pf = subdir + '/' + PLAYER_FILE_PRE + '_' + tim;
+  pf = pf.substr( 0, pf.length()-1 );
   ofstream playerFile( pf.c_str() );
+  
+  if(!playerFile){
+    playerFile.open(pf.c_str(), std::fstream::trunc);
+  }
+  
   this -> savePlayer( player, playerFile );
   
   roomFile.close();
@@ -112,15 +136,49 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   string pName;
   cout << "Player name: ";
   cin >> pName;
-
-  string rmf = ROOM_FILE_PRE + pName;
+  
+  
+  //use wildcard(user defined funciton) or regex(C++11) to chk file fmt
+  //just use find and substr
+  //for f in `find . -type f`
+  //do
+  //  check f fmt
+  //done
+  string subdir = "record";
+  subdir += '/' + pName;
+  
+  vector<string> files = vector<string>();
+  getdir(subdir ,files);
+  
+  vector<string> timev;
+  timev.clear();
+  for(int i = 0; i < files.size(); i++){
+    if( files[i].substr(0, strlen( ROOM_FILE_PRE )) == ROOM_FILE_PRE){
+      timev.push_back( files[i].substr( strlen( ROOM_FILE_PRE )+1 ) );
+      cout << timev.size() << ": " << timev.back() << endl;
+    }
+  }
+  
+  int idx;
+  cin >> idx;
+  for(; idx <= 0 || idx > files.size(); cout << "Invalid index.\nInput again.\n")
+    cin >> idx;
+  idx -= 1;
+  
+  string rmf = ROOM_FILE_PRE;
+  rmf += ('_' + timev[idx]);
+  rmf = (subdir + '/') + rmf;
+  
   ifstream roomFile( rmf.c_str() );
   if(roomFile.good())
     this -> loadRooms( roomList, roomFile );
   else
     cerr << "open roomFile fail\n", exit(0);
  
-  string pf = PLAYER_FILE_PRE + pName;
+  string pf = PLAYER_FILE_PRE;
+  pf += ('_' + timev[idx]);
+  pf = (subdir + '/') + pf;
+  
   ifstream playerFile( pf.c_str() );
   if(playerFile.good())
     this -> loadPlayer( player, playerFile, roomList );
@@ -131,3 +189,4 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   playerFile.close();
   return true;//sucess
 }
+

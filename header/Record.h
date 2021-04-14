@@ -6,6 +6,8 @@
 #include <vector>
 #include <sstream>
 #include <cstdlib>
+#include <ctime> 
+#include "fileoper.h"
 #include "Item.h"
 #include "Monster.h"
 #include "NPC.h"

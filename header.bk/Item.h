@@ -9,7 +9,7 @@
 #include "Player.h"//triggerEvent
 using namespace std;
 
-
+class Player;
 class Item: public Object
 {
 private:

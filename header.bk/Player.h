@@ -10,7 +10,7 @@
 #include "Item.h"
 
 using namespace std;
-
+class Item;
 class Player: public GameCharacter
 {
 private:

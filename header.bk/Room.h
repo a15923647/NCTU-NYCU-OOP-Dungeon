@@ -6,9 +6,6 @@
 #include <string>
 #include <vector>
 #include "Object.h"
-#include "Monster.h"
-#include "NPC.h"
-#include "Item.h"
 
 using namespace std;
 

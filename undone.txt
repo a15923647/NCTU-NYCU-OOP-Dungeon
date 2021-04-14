@@ -1,10 +1,10 @@
 boss
+level
 exp system
 monster drop
 recover after combat
 medicine
 mp system
-dodge rate
 critical strike
 dynamic show hp mp atk def
 flush screen
