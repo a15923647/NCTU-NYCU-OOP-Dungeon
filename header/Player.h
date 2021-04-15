@@ -17,6 +17,7 @@ private:
     Room* currentRoom;
     Room* previousRoom;
     vector<Item> inventory;
+    int coin;
 public:
     Player();
     Player(string,int,int,int);
@@ -35,9 +36,11 @@ public:
     void setCurrentRoom(Room*);
     void setPreviousRoom(Room*);
     void setInventory(vector<Item>);
+    void setCoin(int);
     Room* getCurrentRoom();
     Room* getPreviousRoom();
     vector<Item> getInventory();
+    int getCoin();
     friend ostream& operator <<(ostream& , const Player& );
 };
 

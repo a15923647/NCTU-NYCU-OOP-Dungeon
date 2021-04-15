@@ -1,10 +1,13 @@
 #include "Player.h"
 #define min(a,b) ((a) < (b)) ? (a) : (b)
 Player::Player() : GameCharacter("hahaha", "player", 10, 10, 10){
+  this->coin = 60;
 }
 
 Player::Player(string name, int hp, int atk, int def) : 
-  GameCharacter(name, "player", hp, atk, def){}
+  GameCharacter(name, "player", hp, atk, def){
+    this->coin = 60;
+}
 
 void Player::addItem(Item ne){
   this -> increaseStates(ne.getHealth(), ne.getAttack(), ne.getDefense());
@@ -27,6 +30,7 @@ ostream& operator << (ostream& outputStream, Player& ply){
   outputStream << "HP: " << ply.getCurrentHealth() << "/" << ply.getMaxHealth() << endl;
   outputStream << "Attack: " << ply.getAttack() << endl;
   outputStream << "Defense: " << ply.getDefense()  << endl;
+  outputStream << "Coin: " << ply.getCoin() << endl;
   
   outputStream << "inventory: " << endl;
   for(int i = 0; i < ply.getInventory().size(); i++){
@@ -68,7 +72,8 @@ void Player::listMember(ofstream& playerFile){
   playerFile << this -> getMaxHealth() << " ";
   playerFile << this -> getCurrentHealth() << " ";
   playerFile << this -> getAttack() << " ";
-  playerFile << this -> getDefense() << endl;
+  playerFile << this -> getDefense() << " ";
+  playerFile << this -> getCoin() << endl;
   vector<Item> inventory = this -> getInventory();
   int size = inventory.size();
   playerFile << size << endl;
@@ -81,10 +86,11 @@ void Player::loadMember(ifstream& playerFile){
   string pName = "", fmt_alg;
   getline( playerFile, pName );
   
-  int mhp, chp, atk, def;
-  playerFile >> mhp >> chp >> atk >> def;
+  int mhp, chp, atk, def, co;
+  playerFile >> mhp >> chp >> atk >> def >> co;
   getline( playerFile, fmt_alg );
   this -> setGameCharacter( pName , "player", chp, atk, def);
+  this -> setCoin( co );
   
   this -> inventory.clear();
   int n;
@@ -108,4 +114,12 @@ Room* Player::getCurrentRoom(){
 
 Room* Player::getPreviousRoom(){
   return this -> previousRoom;
+}
+
+void Player::setCoin(int co){
+  this -> coin = co;
+}
+
+int Player::getCoin(){
+  return this -> coin;
 }

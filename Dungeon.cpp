@@ -77,8 +77,10 @@ void Dungeon::createMap(){
 
       name = split_first( inp_line );
       ridx = atoi( split_first( inp_line ).c_str() );
+      int coin = atoi( split_first( inp_line ).c_str() );
       new_npc = new NPC;
-	  new_npc -> setName( name );
+	    new_npc -> setName( name );
+      new_npc -> setCoin( coin );
       objs_tmp[ridx].push_back( new_npc );
     }
     else if(sp_cnt == 2){
@@ -86,25 +88,31 @@ void Dungeon::createMap(){
     }
     else if(sp_cnt == 4){
       string itmName;
-      int h, a, d;
+      int h, a, d, va, dur;
 
       inp_line = inp_line.substr(4);
       itmName = split_first( inp_line );
       h = atoi( split_first( inp_line ).c_str() );
       a = atoi( split_first( inp_line ).c_str() );
       d = atoi( split_first( inp_line ).c_str() );
+      va = atoi( split_first( inp_line ).c_str() );
+      dur = atoi( split_first( inp_line ).c_str() );
       #ifdef DEBUG
-	  /*cout << "new Item" << endl;
-	  cout << "name: " << itmName << endl;
-	  cout << "health: " << h << endl;
-	  cout << "attack: " << a << endl;
-	  cout << "defense: " << d << endl;*/
-	  #endif
-      cmd.push_back( Item(itmName, h, a, d) );
+	    cout << "new Item" << endl;
+	    cout << "name: " << itmName << endl;
+	    cout << "health: " << h << endl;
+	    cout << "attack: " << a << endl;
+	    cout << "defense: " << d << endl;
+      cout << "in Dungeon::createMap dur: " << dur << endl;
+	    #endif
+      Item nitm(itmName, h, a, d);
+      nitm.setValue(va);
+      nitm.setDurability(dur);
+      cmd.push_back( nitm );
     }
   }
   if(cmd.size() != 0) 
-        new_npc -> setCommodity(cmd);//set cmd of old npc
+    new_npc -> setCommodity(cmd);//set cmd of old npc
 
   //load to room objects sucess
   
@@ -112,7 +120,7 @@ void Dungeon::createMap(){
   ifstream monster("Monster");
   if(!monster.good()){
     cerr << "open monster file fail.\nPlease ensure the file exists." << endl;
-	exit(0);
+	  exit(0);
   }
   
   if(!monster.eof()) 
@@ -124,7 +132,7 @@ void Dungeon::createMap(){
     Monster* new_mon = new Monster(name, h, a, d);
     objs_tmp[ridx].push_back( new_mon );
 	
-	monster >> ridx;
+	  monster >> ridx;
   }
   
   //load treasure
@@ -133,11 +141,15 @@ void Dungeon::createMap(){
   treasure >> notr;
   while(notr--){
     string t_name, fmt_alg;
-	int t_h, t_a, t_d;
-	treasure >> ridx >> t_name >> t_h >> t_a >> t_d;
-	Item* nt = new Item( t_name, t_h, t_a, t_d );
+	  int t_h, t_a, t_d, t_va, t_dur;
+	  treasure >> ridx >> t_name >> t_h >> t_a >> t_d >> t_va >> t_dur;
+    
+	  Item* nt = new Item( t_name, t_h, t_a, t_d );
+    nt -> setValue(t_va);
+    nt -> setDurability(t_dur);
     objs_tmp[ridx].push_back( nt );
-	getline( treasure, fmt_alg );
+  
+	  getline( treasure, fmt_alg );
   }
   
   for(int i = 0; \

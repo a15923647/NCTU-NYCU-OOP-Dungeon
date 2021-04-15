@@ -16,17 +16,18 @@ using namespace std;
 class Monster: public GameCharacter
 {
 private:
+  vector<Item> dropItem;
 public:
-    Monster();
-    Monster(string,int,int,int);
+  Monster();
+  Monster(string,int,int,int);
 
     /* Virtual function that you need to complete   */
     /* In Monster, this function should deal with   */
     /* the combat system.                           */
-    bool triggerEvent(Object*);
-    void listMember(ofstream& );
-    void loadMember(ifstream& );
-    void reset( Monster& );
+  bool triggerEvent(Object*);
+  void listMember(ofstream& );
+  void loadMember(ifstream& );
+  void reset( Monster& );
 	
 	friend ostream& operator <<(ostream& , const Monster& );
 };

@@ -18,11 +18,22 @@ ostream& operator << (ostream& outputStream, Monster& mon){
   /*outputStream << "inventory: " << endl;
   for(int i = 0; i < mon.getInventory().size(); i++){
     outputStream << mon.getInventory().at(i).getName() << endl;
-  }*/
+  }*///implement drop item
+}
+
+void Monster::reset(Monster& bk){
+  this -> setGameCharacter(bk.getName(), "monster", bk.getCurrentHealth(), bk.getAttack(), bk.getDefense());
+  this -> setMaxHealth( bk.getMaxHealth() );
 }
 
 bool Monster::triggerEvent(Object* obj){
   //implement combat system
+  /*
+    backup this monster
+    reset if player retreat
+  */
+  Monster mon_bk( *this );//use copy constructor
+  
   //attack or retreat
   Player *player = dynamic_cast<Player*>(obj);
   if(player == NULL) return false;
@@ -40,11 +51,14 @@ bool Monster::triggerEvent(Object* obj){
       cin >> choice;
     }
     if(choice == "1"){
+      //reset monster
+      this -> reset( mon_bk );
       player -> changeRoom( player->getPreviousRoom() );
       break;
     }
     //combat system
 	srand( time(NULL) );
+  
 	double m_dodge_rate = 0.5;//maybe create a member in GameCharacter
     //player attack
     if(player->getAttack() > this->getDefense() ){
@@ -58,6 +72,7 @@ bool Monster::triggerEvent(Object* obj){
       cout << "victory" << endl;
       break;
     }
+    
     //monster attack
 	double p_dodge_rate = 0.5;
     if( this -> getAttack() > player -> getDefense()){

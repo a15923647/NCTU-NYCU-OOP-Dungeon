@@ -1,15 +1,16 @@
 boss
-level
-cstrike
+level system
+* cstrike
+* skill
+* dodge rate
 unbeatable state
 xp sys
 mp sys
 buff
 monster drop
-* coin
 * item
 
-monster reset after player retreat.
+monster reset after player retreat.//complete but have not test
 potion
 * add use_time in Item.h
   * if meets a certain number, the item is unbreakable

@@ -16,18 +16,22 @@ void Item::listMember(ofstream& roomFile){
   roomFile << this -> getName() << " ";
   roomFile << this -> getHealth() << " ";
   roomFile << this -> getAttack() << " ";
-  roomFile << this -> getDefense() << endl;
+  roomFile << this -> getDefense() << " ";
+  roomFile << this -> getValue() << " ";
+  roomFile << this -> getDurability() << endl;
 }
 
 void Item::loadMember(ifstream& roomFile){
   string tag, name;
-  int h, a, d;
-  roomFile >> tag >> name >> h >> a >> d;
+  int h, a, d, va, dur;
+  roomFile >> tag >> name >> h >> a >> d >> va >> dur;
   this -> setTag(tag);
   this -> setName(name);
   this -> setHealth(h);
   this -> setAttack(a);
   this -> setDefense(d);
+  this -> setValue(va);
+  this -> setDurability(dur);
   string fmt_alg;
   getline( roomFile, fmt_alg);
 }
@@ -44,6 +48,14 @@ int Item::getDefense(){
   return this -> defense;
 }
 
+int Item::getValue(){
+  return this -> value;
+}
+
+int Item::getDurability(){
+  return this -> durability;
+}
+
 void Item::setHealth(int inp){ 
   this -> health = inp;
 }
@@ -56,6 +68,14 @@ void Item::setDefense(int inp){
   this -> defense = inp;
 }
 
+void Item::setValue(int va){
+  this -> value = va;
+}
+
+void Item::setDurability(int dur){
+  this -> durability = dur;
+}
+
 bool Item::triggerEvent(Object* obj){
   Player* player = dynamic_cast<Player*>(obj);
   if(player == NULL) return false;
@@ -63,4 +83,19 @@ bool Item::triggerEvent(Object* obj){
   return true;
 }
 
+bool Item::operator == (Item a){
+  if(a.getAttack() == this->getAttack() &&\
+     a.getDefense() == this->getDefense() &&\
+     a.getHealth() == this->getHealth() &&\
+     a.getName() == this->getName())
+       return true;
+  
+  return false;
+}
 
+ostream& operator << (ostream& out, Item item){
+  out << "Attack: " << item.getAttack() << endl;
+  out << "Defense: " << item.getDefense() << endl;
+  out << "Health: " << item.getHealth() << endl;
+  out << "Durability: " << item.getDurability() << endl;
+}

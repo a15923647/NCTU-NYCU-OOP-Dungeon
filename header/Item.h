@@ -13,7 +13,9 @@ class Player;
 class Item: public Object
 {
 private:
-    int health,attack,defense;
+    int health, attack, defense;
+    int value;
+    int durability;
 public:
     Item();
     Item(string, int, int, int);
@@ -31,9 +33,16 @@ public:
     int getHealth();
     int getAttack();
     int getDefense();
+    int getValue();
+    int getDurability();
     void setHealth(int);
     void setAttack(int);
     void setDefense(int);
+    void setValue(int);
+    void setDurability(int);
+    
+    bool operator == (Item);
+    friend ostream& operator <<(ostream&, Item);
 };
 
 #endif // ITEM_H_INCLUDED
