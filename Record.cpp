@@ -1,7 +1,7 @@
 #include "Record.h"
 #define ROOM_FILE_PRE "roomFile"
 #define PLAYER_FILE_PRE "playerFile"
-
+#define MAP_FILE_PRE "map"
 Record::Record(){
 
 }
@@ -44,8 +44,11 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
     roomList.push_back(Room());
     roomList[i].setIndex(i);
   }
+  
+  //roomFile.ignore();//fmt_alg
   //load every room
   int roomIdx = -1;
+  
   for(roomFile >> roomIdx; !roomFile.eof(); roomFile >> roomIdx){
     roomList[ roomIdx ].loadMember(roomFile);//load isExit
     //load other members since room cannot access monster, npc, player, item
@@ -77,7 +80,7 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
     }
     roomList[roomIdx].setObjects( objs );
   }
-  //connect them together
+  /*//connect them together
   ifstream map("map");
   int t;
   map >> t;
@@ -92,7 +95,8 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
     if(l != -1) roomList[i].setLeftRoom( &roomList[l] );
     if(r != -1) roomList[i].setRightRoom( &roomList[r] );
   }
-  map.close();
+  map.close();*/
+  //implement in Record::loadFromFile
 }
 
 void Record::saveToFile(Player* player, vector<Room>& roomList){
@@ -103,12 +107,34 @@ void Record::saveToFile(Player* player, vector<Room>& roomList){
   
   time_t now = time( 0 );
   string tim( ctime(&now) );
-  for(int i = 0; i < tim.size(); i++)
+  int tim_size = tim.size();
+  for(int i = 0; i < tim_size; i++)
     if(tim[i] == ' ')
       tim[i] = '_';
     else if(tim[i] == ':')
       tim[i] = '-';
   
+  string mapf = subdir + '/' + MAP_FILE_PRE + '_' + tim;
+  mapf = mapf.substr( 0, mapf.length()-1 );
+  ofstream map( mapf );
+  if(!map){
+    map.open(mapf.c_str(), std::fstream::trunc);
+  }
+  map << roomList.size() << endl;
+  int room_size = roomList.size();
+  for(int i = 0; i < room_size; i++){
+    map << roomList[i].getIndex() << " ";
+    int tmp = (roomList[i].getUpRoom()) == (Room*)NULL ? -1 : roomList[i].getUpRoom()->getIndex();
+    map << tmp << " ";
+  
+    tmp = (roomList[i].getDownRoom()) == (Room*)NULL ? -1 : roomList[i].getDownRoom()->getIndex();
+    map << tmp << " ";
+    tmp = (roomList[i].getLeftRoom()) == (Room*)NULL ? -1 : roomList[i].getLeftRoom()->getIndex();
+    map << tmp << " ";
+    tmp = (roomList[i].getRightRoom()) == (Room*)NULL ? -1 : roomList[i].getRightRoom()->getIndex();
+    map << tmp << endl;
+  }
+
   string rmf = subdir + '/' + ROOM_FILE_PRE + '_' + tim;
   rmf = rmf.substr( 0, rmf.length()-1 );
   ofstream roomFile( rmf.c_str() );
@@ -121,13 +147,13 @@ void Record::saveToFile(Player* player, vector<Room>& roomList){
   string pf = subdir + '/' + PLAYER_FILE_PRE + '_' + tim;
   pf = pf.substr( 0, pf.length()-1 );
   ofstream playerFile( pf.c_str() );
-  
   if(!playerFile){
     playerFile.open(pf.c_str(), std::fstream::trunc);
   }
   
   this -> savePlayer( player, playerFile );
   
+  map.close();
   roomFile.close();
   playerFile.close();
 }
@@ -137,13 +163,6 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   cout << "Player name: ";
   cin >> pName;
   
-  
-  //use wildcard(user defined funciton) or regex(C++11) to chk file fmt
-  //just use find and substr
-  //for f in `find . -type f`
-  //do
-  //  check f fmt
-  //done
   string subdir = "record";
   subdir += '/' + pName;
   
@@ -168,13 +187,35 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   string rmf = ROOM_FILE_PRE;
   rmf += ('_' + timev[idx]);
   rmf = (subdir + '/') + rmf;
-  
+  //load objects in each room and set isExit
   ifstream roomFile( rmf.c_str() );
   if(roomFile.good())
     this -> loadRooms( roomList, roomFile );
   else
     cerr << "open roomFile fail\n", exit(0);
- 
+  //connect them
+  string mapf = MAP_FILE_PRE;
+  mapf += ('_' + timev[idx]);
+  mapf = (subdir + '/') + mapf;
+  ifstream map( mapf.c_str() );
+  if(!map.good())
+    cerr << "open map fail\n", exit(0);
+  
+  int t;
+  map >> t;
+  string fmt_alg;
+  getline( map, fmt_alg );
+  while( t-- ){
+    int i, u, d, l, r;
+	map >> i >> u >> d >> l >> r;
+	
+    if(u != -1) roomList[i].setUpRoom( &roomList[u] );
+    if(d != -1) roomList[i].setDownRoom( &roomList[d] );
+    if(l != -1) roomList[i].setLeftRoom( &roomList[l] );
+    if(r != -1) roomList[i].setRightRoom( &roomList[r] );
+  }
+  
+  //load player
   string pf = PLAYER_FILE_PRE;
   pf += ('_' + timev[idx]);
   pf = (subdir + '/') + pf;
@@ -185,6 +226,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   else
     cerr << "open playerFile fail\n", exit(0);
 
+  map.close();
   roomFile.close();
   playerFile.close();
   return true;//sucess

@@ -1,4 +1,3 @@
-independently save map cohere to player + time
 boss
 level
 cstrike

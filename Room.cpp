@@ -21,7 +21,7 @@ int tag2classid(string tag){
 Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects){}
 
 void Room::listMember(ofstream& roomFile){
-  ofstream map("map", ios::out|ios::app);
+  /*ofstream map("map", ios::out|ios::app);
   map << this->getIndex() << " ";
   int tmp = (this->getUpRoom()) == (Room*)NULL ? -1 : this->upRoom->getIndex();
   map << tmp << " ";
@@ -34,10 +34,12 @@ void Room::listMember(ofstream& roomFile){
   map << tmp << endl;
 
   map.close();
+  */
+  //implement in Record.cpp
 
   roomFile << this->getIndex() << endl;
   roomFile << this->getIsExit() << endl;
-
+  
   vector<Object*> objs = this->getObjects();
   /*
    * # CLASSID
