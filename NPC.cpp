@@ -17,35 +17,6 @@ void NPC::listCommodity(){
     cout << this -> commodity.at(i).getName() << endl;
   }
 }
-/*
-bool NPC::triggerEvent(Object* obj){//change to select number
-  Player* player = dynamic_cast<Player*>(obj);
-  if(player == NULL) return false;
-  cout << this -> getScript() << endl;
-  //call player's addItem to give the item to player
-  for(int i = 0; i < this -> commodity.size(); i++){
-    cout << this -> commodity[i].getName() << endl;
-    #ifdef DEBUG
-	cout << "  health: " << this -> getHealth() << endl;
-    #endif	
-  }
-  cout << "Choose the item you want: ";
-  bool sucess = false;
-  string query;
-  while(!sucess && this -> commodity.size() != 0){
-    cin >> query;
-    for(int i = 0; i < commodity.size(); i++){
-        if(query == commodity.at(i).getName()){
-            player->addItem( commodity.at(i) );
-            this -> commodity.erase( this->commodity.begin() + i );//remove object
-			sucess = true;
-        }
-    }
-  }
-  return true;
-}
-*/
-//add trading system
 
 bool NPC::triggerEvent(Object* obj){
   Player* player = dynamic_cast<Player*>(obj);
