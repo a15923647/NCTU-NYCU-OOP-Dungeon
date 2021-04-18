@@ -25,11 +25,10 @@ string split_first(string& str){
 
 void Dungeon::createMap(){
   ifstream map("map");
-  if(!map.good()){
+  if(!map.good()){//format chk?
     cerr << "Fail to open map file.\nPlease check your map file\n";
     exit(0);
   }
-  
   int nor;//number of room
   map >> nor;
   this -> rooms.clear();
@@ -47,7 +46,6 @@ void Dungeon::createMap(){
     map >> tmp; tmp != -1 ? this->rooms[idx].setLeftRoom( &(this->rooms[tmp]) ) : this->rooms[idx].setLeftRoom( NULL );
     map >> tmp; tmp != -1 ? this->rooms[idx].setRightRoom( &(this->rooms[tmp]) ) : this->rooms[idx].setRightRoom( NULL );
   }
-  
   //default exit is the last room
   this -> rooms[nor-1].setIsExit( true );
   map.close();
@@ -60,6 +58,7 @@ void Dungeon::createMap(){
   for(int i = 0; \
       i < nor; \
       objs_tmp[i] = this -> rooms[i].getObjects(), i++);
+  
   
   //load NPC
   ifstream npc( "npc" );

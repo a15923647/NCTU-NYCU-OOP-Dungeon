@@ -1,0 +1,25 @@
+Dungeon.o: Dungeon.cpp header/Dungeon.h header/Player.h \
+ header/GameCharacter.h header/Object.h header/Room.h header/Item.h \
+ header/Monster.h header/NPC.h header/Record.h header/fileoper.h \
+ header/dirent_loc.h
+GameCharacter.o: GameCharacter.cpp header/GameCharacter.h header/Object.h
+Item.o: Item.cpp header/Item.h header/Object.h header/Player.h \
+ header/GameCharacter.h header/Room.h header/Item.h
+Level.o: Level.cpp header/Level.h header/Player.h header/GameCharacter.h \
+ header/Object.h header/Room.h header/Item.h header/Player.h
+main.o: main.cpp header/Dungeon.h header/Player.h header/GameCharacter.h \
+ header/Object.h header/Room.h header/Item.h header/Monster.h \
+ header/NPC.h header/Record.h header/fileoper.h header/dirent_loc.h \
+ header/Item.h header/Monster.h header/NPC.h header/Player.h \
+ header/Room.h header/Record.h header/Object.h
+Monster.o: Monster.cpp header/Monster.h header/GameCharacter.h \
+ header/Object.h header/Player.h header/Room.h header/Item.h
+NPC.o: NPC.cpp header/NPC.h header/GameCharacter.h header/Object.h \
+ header/Player.h header/Room.h header/Item.h
+Object.o: Object.cpp header/Object.h
+Player.o: Player.cpp header/Player.h header/GameCharacter.h \
+ header/Object.h header/Room.h header/Item.h header/Player.h
+Record.o: Record.cpp header/Record.h header/fileoper.h \
+ header/dirent_loc.h header/Item.h header/Object.h header/Player.h \
+ header/GameCharacter.h header/Room.h header/Monster.h header/NPC.h
+Room.o: Room.cpp header/Room.h header/Object.h

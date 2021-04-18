@@ -58,7 +58,8 @@ bool NPC::triggerEvent(Object* obj){
     cin >> idx;
     idx-=1;
     
-    NPC::exchange((Object*)player, (Object*)this, this->commodity[idx]);
+    if(NPC::exchange((Object*)player, (Object*)this, this->commodity[idx]))
+      cout << "close a deal" << endl;
   }
   else if(choice == "2"){
     cout << "Which item you want to sale?" << endl;
@@ -85,7 +86,8 @@ bool NPC::triggerEvent(Object* obj){
     cin >> idx;
     idx -= 1;
     
-    NPC::exchange((Object*)this, (Object*)player, pinv[idx]);
+    if(NPC::exchange((Object*)this, (Object*)player, pinv[idx]))
+      cout << "close a deal" << endl;
   }
 }
 
@@ -140,9 +142,10 @@ bool NPC::exchange(Object* buyer, Object* saler, Item& item){
     Player* s = dynamic_cast<Player*>( saler );
     //Player -> NPC
     if(b->getCoin() >= item.getValue()){
+      //xchg coin
       b->setCoin( b->getCoin() - item.getValue() );
       s->setCoin( s->getCoin() + item.getValue() );
-      
+      //xchg item
       vector<Item> bycom = b->getCommodity();
       bycom.push_back( item );
       b->setCommodity( bycom );
@@ -154,6 +157,8 @@ bool NPC::exchange(Object* buyer, Object* saler, Item& item){
         if(sainv[idx] == item){
           sainv.erase( sainv.begin() + idx );
           sucess = true;
+          //avoid negative chk should be implement
+          s->increaseStates( -item.getHealth(), -item.getAttack(), -item.getDefense() );
         }
         idx++;
       }
@@ -163,6 +168,7 @@ bool NPC::exchange(Object* buyer, Object* saler, Item& item){
     }
     else
       cout << "Buyer has not enough amount of money.\n";
+    return false;
   }
   else if(dynamic_cast<Player*>( buyer ) && dynamic_cast<NPC*>( saler )){
     Player* b = dynamic_cast<Player*>( buyer );
@@ -170,9 +176,10 @@ bool NPC::exchange(Object* buyer, Object* saler, Item& item){
     
     //NPC -> Player
     if(b->getCoin() >= item.getValue()){
+      //xchg coin
       b->setCoin( b->getCoin() - item.getValue() );
       s->setCoin( s->getCoin() + item.getValue() );
-      
+      //xchg item
       b->addItem(item);
       
       vector<Item> sacom = s->getCommodity();

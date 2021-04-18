@@ -116,7 +116,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList){
   
   string mapf = subdir + '/' + MAP_FILE_PRE + '_' + tim;
   mapf = mapf.substr( 0, mapf.length()-1 );
-  ofstream map( mapf );
+  ofstream map( mapf.c_str() );
   if(!map){
     map.open(mapf.c_str(), std::fstream::trunc);
   }

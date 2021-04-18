@@ -1,12 +1,19 @@
 boss
+* two types
+
 level system
-* cstrike
-* skill
-* dodge rate
+* boost every attribute bound base on level
+
+dodge rate random
+attack random range
+
+magic attack system
+* add attribute to monsters and and magic attack
+* class skill
+  * type
+* learn skill
+
 unbeatable state
-xp sys
-mp sys
-buff
 monster drop
 * item
 
@@ -16,3 +23,5 @@ potion
   * if meets a certain number, the item is unbreakable
   * if meets other number, minus the number by 1
 armour
+
+modify chooseAction list

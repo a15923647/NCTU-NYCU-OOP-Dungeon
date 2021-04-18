@@ -44,6 +44,10 @@ bool Monster::triggerEvent(Object* obj){
   string choice = "";
   while( !(player->checkIsDead()) && !(this->checkIsDead()) ){
     //combat until retreat or one die
+    /*
+      idea:
+        input uuddllrrba to trigger magic attack
+    */
     cin >> choice;
     while(choice != "0" && choice != "1"){
       //input error
