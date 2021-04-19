@@ -2,6 +2,7 @@
 #define ROOM_FILE_PRE "roomFile"
 #define PLAYER_FILE_PRE "playerFile"
 #define MAP_FILE_PRE "map"
+#define SKILL_FILE_PRE "skill_repo"
 Record::Record(){
 
 }
@@ -14,6 +15,13 @@ void Record::saveRooms(vector<Room>& roomList, ofstream& roomFile){
   roomFile << roomList.size() << endl;
   for(int i = 0; i < roomList.size(); i++){
     roomList[i].listMember(roomFile);
+  }
+}
+
+void Record::saveSkill_repo(vector<Skill>& skill_repo, ofstream& skill_repoFile){
+  skill_repoFile << skill_repo.size() << endl;
+  for(int i = 0; i < skill_repo.size(); i++){
+    skill_repo[i].listMember(skill_repoFile);
   }
 }
 
@@ -99,7 +107,19 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
   //implement in Record::loadFromFile
 }
 
-void Record::saveToFile(Player* player, vector<Room>& roomList){
+void Record::loadSkill_repo(vector<Skill>& skill_repo, ifstream& skill_repoFile){
+  int nosk;
+  skill_repoFile >> nosk;
+  skill_repoFile.ignore();
+  
+  skill_repo.clear();
+  while(nosk--){
+    skill_repo.push_back( Skill() );
+    skill_repo.back().loadMember( skill_repoFile );
+  }
+}
+
+void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& skill_repo){
   string subdir = "record";
   create_dir_ifnext( subdir );
   subdir = subdir + '/' + player->getName();
@@ -153,12 +173,22 @@ void Record::saveToFile(Player* player, vector<Room>& roomList){
   
   this -> savePlayer( player, playerFile );
   
+  string skf = subdir + '/' + SKILL_FILE_PRE + '_' + tim;
+  skf = skf.substr( 0, skf.length()-1 );
+  ofstream skill_repoFile( skf.c_str() );
+  if(!skill_repoFile){
+    skill_repoFile.open(skf.c_str(), std::fstream::trunc);
+  }
+  
+  this -> saveSkill_repo( skill_repo, skill_repoFile );
+  
   map.close();
   roomFile.close();
   playerFile.close();
+  skill_repoFile.close();
 }
 
-bool Record::loadFromFile(Player* player, vector<Room>& roomList){
+bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>& skill_repo){
   string pName;
   cout << "Player name: ";
   cin >> pName;
@@ -226,6 +256,16 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList){
   else
     cerr << "open playerFile fail\n", exit(0);
 
+  string skf = SKILL_FILE_PRE;
+  skf += ('_' + timev[idx]);
+  skf = (subdir + '/') + skf;
+  
+  ifstream skill_repoFile( skf.c_str() );
+  if(skill_repoFile.good())
+    this -> loadSkill_repo( skill_repo, skill_repoFile );
+  else
+    cerr << "open skill_repoFile fail\n", exit(0);
+  
   map.close();
   roomFile.close();
   playerFile.close();

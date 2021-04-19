@@ -217,7 +217,7 @@ void Dungeon::startGame(){
     this -> createPlayer(name);
   }
   else if(choice == 2){
-    record.loadFromFile( &(this->player), this->rooms );
+    record.loadFromFile( &(this->player), this->rooms, this->skill_repo );
   }
   else if(choice == 3)
     exit(0);
@@ -262,7 +262,7 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
     case 6:
       this -> learnSkills();
     case 7:
-      this -> record.saveToFile( &(this->player), this->rooms);
+      this -> record.saveToFile( &(this->player), this->rooms, this->skill_repo);
       break;
     case 8:
       cout << "bye" << endl;

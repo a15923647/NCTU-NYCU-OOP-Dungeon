@@ -13,6 +13,7 @@
 #include "NPC.h"
 #include "Player.h"
 #include "Room.h"
+#include "Skill.h"
 
 using namespace std;
 
@@ -26,13 +27,15 @@ class Record
 private:
     void savePlayer(Player*, ofstream&);
     void saveRooms(vector<Room>&, ofstream&);
+    void saveSkill_repo(vector<Skill>&, ofstream&);
     void loadPlayer(Player*, ifstream&, vector<Room>&);
     void loadRooms(vector<Room>&, ifstream&);
+    void loadSkill_repo(vector<Skill>&, ifstream&);
 
 public:
     Record();
-    void saveToFile(Player*, vector<Room>&);
-    bool loadFromFile(Player*, vector<Room>&);
+    void saveToFile(Player*, vector<Room>&, vector<Skill>&);
+    bool loadFromFile(Player*, vector<Room>&, vector<Skill>&);
 
 };
 
