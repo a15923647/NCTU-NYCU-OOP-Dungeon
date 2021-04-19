@@ -83,7 +83,7 @@ bool Skill::triggerEvent(Object* mon){//Monster object
   
   final_attack *= (int)(1+0.1 * this->proficiency);
   
-  double m_magic_dodge_rate = 0.5;
+  double m_magic_dodge_rate = 0.1;
   
   if(monster->getDefense() < final_attack && ((double)rand() / (RAND_MAX + 1.0) > m_magic_dodge_rate))
     monster -> takeDamage( final_attack );

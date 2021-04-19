@@ -3,7 +3,6 @@
 Player::Player() : GameCharacter("hahaha", "player", 10, 10, 10){
   this->level = new Level(1);
   this->coin = 60;
-  this->level -> setLevel(1);
   this->calMpMax();
   this->level -> setBuff(this);
   this -> heal();
@@ -13,7 +12,6 @@ Player::Player(string name, int hp, int atk, int def) :
   GameCharacter(name, "player", hp, atk, def){
   this->level = new Level(1);
   this->coin = 60;
-  this->level -> setLevel(1);
   this->calMpMax();
   this->level -> setBuff(this);
   this -> heal();
@@ -112,6 +110,8 @@ void Player::listMember(ofstream& playerFile){
   playerFile << this -> getAttack() << " ";
   playerFile << this -> getDefense() << " ";
   playerFile << this -> getCoin() << " ";
+  playerFile << this -> getLevelO() -> getLevel() << " ";
+  playerFile << this -> getLevelO() -> getXp() << " ";
   playerFile << this -> getMp() << endl;
   vector<Item> inventory = this -> getInventory();
   int size = inventory.size();
@@ -132,11 +132,14 @@ void Player::loadMember(ifstream& playerFile){
   string pName = "";
   getline( playerFile, pName );
   
-  int mhp, chp, atk, def, co, mp;
-  playerFile >> mhp >> chp >> atk >> def >> co >> mp;
+  int mhp, chp, atk, def, co, lv, xp, mp;
+  playerFile >> mhp >> chp >> atk >> def >> co >> lv >> xp >> mp;
   playerFile.ignore();
   this -> setGameCharacter( pName , "player", chp, atk, def);
   this -> setCoin( co );
+  this -> getLevelO() -> resetBuff( this );
+  this -> getLevelO() -> setLevel( lv, xp );
+  this -> getLevelO() -> setBuff( this );
   this -> setMp( mp );
   
   this -> inventory.clear();

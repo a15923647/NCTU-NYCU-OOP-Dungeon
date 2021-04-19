@@ -2,11 +2,13 @@
 Monster::Monster() {
   this -> setGameCharacter("default_monster", "monster", 10, 10, 10);
   this -> setMaxHealth(1000);
+  this -> attribute_id = 0;
 }
 
-Monster::Monster(string name, int hp, int atk, int def){
+Monster::Monster(string name, int hp, int atk, int def, int att){
   this -> setGameCharacter(name, "monster", hp, atk, def);
   this -> setMaxHealth(1000);
+  this -> attribute_id = att;
 }
 
 ostream& operator << (ostream& outputStream, Monster& mon){
@@ -117,7 +119,7 @@ bool Monster::triggerEvent(Object* obj){
 	
 	  cout << "Monster state" << endl;
     cout << this -> getName() << endl;
-	  cout << *this;
+	  cout << *this << endl;
     
     cout << "Player state" << endl;
     cout << player -> getName() << endl;

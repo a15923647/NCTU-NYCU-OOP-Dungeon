@@ -16,7 +16,7 @@ class Level{
   public:
     Level();
     Level(int );
-    void setLevel(int );
+    void setLevel(int ,int );//level xp
     int getLevel();
     void increaseXp(Player*, int);
     int getXp();

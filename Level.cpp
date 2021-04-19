@@ -30,7 +30,15 @@ inline void Level::calMpBuff(){this->mpBuff = this->level * 3;}
 inline void Level::calAttackBuff(){this->attackBuff = this->level * 3;}
 inline void Level::calDefenseBuff(){this->defenseBuff = this->level * 10;}
 
-void Level::setLevel(int lv){this->level = lv;}
+void Level::setLevel(int lv, int xp){
+  this->level = lv;
+  this->xp = xp;
+  this -> calMaxXp();
+  this -> calHpBuff();
+  this -> calMpBuff();
+  this -> calAttackBuff();
+  this -> calDefenseBuff();
+}
 void Level::setBuff(Player* player){
   player -> increaseStates(0, +this->attackBuff, +this->defenseBuff, 0);
   player -> raiseBound(+this->hpBuff, +this->mpBuff);

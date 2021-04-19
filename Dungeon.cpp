@@ -114,10 +114,10 @@ void Dungeon::createMap(){
   if(!monster.eof()) 
     monster >> ridx;
   while(!monster.eof() && ridx != -3){
-    int h, a, d;
-    monster >> name >> h >> a >> d;
+    int h, a, d, att;
+    monster >> name >> h >> a >> d >> att;
 	
-    Monster* new_mon = new Monster(name, h, a, d);
+    Monster* new_mon = new Monster(name, h, a, d, att);
     objs_tmp[ridx].push_back( new_mon );
 	
 	  monster >> ridx;
