@@ -1,40 +1,71 @@
 #include "Player.h"
 #define min(a,b) ((a) < (b)) ? (a) : (b)
 Player::Player() : GameCharacter("hahaha", "player", 10, 10, 10){
+  this->level = new Level(1);
   this->coin = 60;
+  this->level -> setLevel(1);
+  this->calMpMax();
+  this->level -> setBuff(this);
+  this -> heal();
 }
 
 Player::Player(string name, int hp, int atk, int def) : 
   GameCharacter(name, "player", hp, atk, def){
-    this->coin = 60;
+  this->level = new Level(1);
+  this->coin = 60;
+  this->level -> setLevel(1);
+  this->calMpMax();
+  this->level -> setBuff(this);
+  this -> heal();
 }
 
 void Player::addItem(Item ne){
-  this -> increaseStates(ne.getHealth(), ne.getAttack(), ne.getDefense());
+  this -> increaseStates(ne.getHealth(), ne.getAttack(), ne.getDefense(), 0);
   (this -> inventory).push_back(ne);
 }
 
-void Player::increaseStates(int hpInc, int atkInc, int defInc){
+void Player::increaseStates(int h, int a, int d, int m){
   int hp = this->getCurrentHealth();
   int atk = this->getAttack();
   int def = this->getDefense();
   int mhp = this->getMaxHealth();
+  int mp = this->mp;
+  
+  this -> setMp( mp + m );
+  this -> setCurrentHealth( min(hp + h, mhp) );
+  this -> setAttack( atk + a );
+  this -> setDefense( def + d );
+}
 
-  this -> setCurrentHealth( min(hp + hpInc, mhp) );
-  this -> setAttack( atk + atkInc );
-  this -> setDefense( def + defInc );
+void Player::raiseBound(int h, int m){
+  this->mpMax += m;
+  this -> setMaxHealth( this -> getMaxHealth() + h);
+}
+
+void Player::heal(){
+  this->mp = this->mpMax;
+  this -> setCurrentHealth( this -> getMaxHealth() );
 }
 
 ostream& operator << (ostream& outputStream, Player& ply){
   //print player status
   outputStream << "HP: " << ply.getCurrentHealth() << "/" << ply.getMaxHealth() << endl;
+  outputStream << "MP: " << ply.getMp() << "/" << ply.getMpMax() << endl;
   outputStream << "Attack: " << ply.getAttack() << endl;
   outputStream << "Defense: " << ply.getDefense()  << endl;
   outputStream << "Coin: " << ply.getCoin() << endl;
   
+  outputStream << endl;
+  outputStream << *ply.getLevelO() << endl;
+  
   outputStream << "inventory: " << endl;
   for(int i = 0; i < ply.getInventory().size(); i++){
-    outputStream << ply.getInventory().at(i).getName() << endl;
+    outputStream << "  " << ply.getInventory().at(i).getName() << endl;
+  }
+  
+  outputStream << "skills: " << endl;
+  for(int i = 0; i < ply.getSkills().size(); i++){
+    outputStream << "  " << ply.getSkills()[i].getName() << endl;
   }
 }
 
@@ -64,6 +95,13 @@ void Player::setInventory(vector<Item> v){
   this -> inventory = v;
 }
 
+void Player::setMp(int mp){
+  this -> mp = mp;
+}
+
+void Player::calMpMax(){
+  this -> mpMax = this->level -> getLevel() * 100;
+}
 
 void Player::listMember(ofstream& playerFile){
   playerFile << this -> currentRoom->getIndex() << " ";
@@ -73,34 +111,51 @@ void Player::listMember(ofstream& playerFile){
   playerFile << this -> getCurrentHealth() << " ";
   playerFile << this -> getAttack() << " ";
   playerFile << this -> getDefense() << " ";
-  playerFile << this -> getCoin() << endl;
+  playerFile << this -> getCoin() << " ";
+  playerFile << this -> getMp() << endl;
   vector<Item> inventory = this -> getInventory();
   int size = inventory.size();
   playerFile << size << endl;
   for(int i = 0; i < size; i++){
     inventory[i].listMember( playerFile );
   }
+  
+  vector<Skill> skv = this -> getSkills();
+  int skv_size = skv.size();
+  playerFile << skv_size << endl;
+  for(int i = 0; i < skv_size; i++){
+    skv[i].listMember( playerFile );
+  }
 }
 
 void Player::loadMember(ifstream& playerFile){
-  string pName = "", fmt_alg;
+  string pName = "";
   getline( playerFile, pName );
   
-  int mhp, chp, atk, def, co;
-  playerFile >> mhp >> chp >> atk >> def >> co;
-  getline( playerFile, fmt_alg );
+  int mhp, chp, atk, def, co, mp;
+  playerFile >> mhp >> chp >> atk >> def >> co >> mp;
+  playerFile.ignore();
   this -> setGameCharacter( pName , "player", chp, atk, def);
   this -> setCoin( co );
+  this -> setMp( mp );
   
   this -> inventory.clear();
+  
   int n;
   playerFile >> n;
-  string tag, name;
-  int h, a, d;
-  for(int i = 0; i < n; i++){
-    playerFile >> tag >> name >> h >> a >> d;
-	getline( playerFile, fmt_alg );
-    inventory.push_back( Item(name, h, a, d) );
+  playerFile.ignore();
+  while(n--){
+    this->inventory.push_back( Item() );
+    this->inventory.back().loadMember( playerFile );
+  }
+  
+  int skv_size;
+  playerFile >> skv_size;
+  playerFile.ignore();
+  
+  while(skv_size--){
+    this->skills.push_back( Skill() );
+    this->skills.back().loadMember( playerFile );
   }
 }
 
@@ -122,4 +177,24 @@ void Player::setCoin(int co){
 
 int Player::getCoin(){
   return this -> coin;
+}
+
+vector<Skill> Player::getSkills(){
+  return this -> skills;
+}
+
+int Player::getMp(){
+  return this -> mp;
+}
+
+void Player::addSkill(Skill sk){
+  this->skills.push_back( sk );
+}
+
+int Player::getMpMax(){
+  return this->mpMax;
+}
+
+Level* Player::getLevelO(){
+  return this->level;
 }

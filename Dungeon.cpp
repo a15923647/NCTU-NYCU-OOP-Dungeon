@@ -144,6 +144,18 @@ void Dungeon::createMap(){
   for(int i = 0; \
       i < nor; \
 	  this -> rooms[i].setObjects( objs_tmp[i] ), i++);
+  
+  ifstream skills_file( "skills" );
+  int nosk;
+  skills_file >> nosk;
+  skills_file.ignore();
+  while(nosk--){
+    string name, tag;
+    int cost, att, atk, mpCon, prof, prof_max;
+    skills_file >> cost >> name >> tag >> att >> atk >> mpCon >> prof >> prof_max;
+    skills_file.ignore();
+    skill_repo.push_back( Skill(cost, name, tag, att, atk, mpCon, prof, prof_max) );
+  }
 }
 
 void Dungeon::handleMovement(){
@@ -213,7 +225,7 @@ void Dungeon::startGame(){
 
 void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
   int choice = -1;
-  while(choice > 7 || choice < 1){
+  while(choice > 8 || choice < 1){
     cout << "choose your action" << endl;
     cout << "------------------------" << endl;
     cout << "1. check status and inventory" << endl;
@@ -221,8 +233,9 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
     cout << "3. communicate to someone" << endl;
     cout << "4. attack with monster" << endl;
     cout << "5. explore treasure" << endl;
-    cout << "6. save game" << endl;
-    cout << "7. exit this game" << endl;
+    cout << "6. learn skills" << endl;
+    cout << "7. save game" << endl;
+    cout << "8. exit this game" << endl;
 	#ifdef DEBUG
 	cout << "8. debug" << endl;
 	#endif
@@ -247,9 +260,11 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
       this -> handleExplore( cur, objects );
       break;
     case 6:
+      this -> learnSkills();
+    case 7:
       this -> record.saveToFile( &(this->player), this->rooms);
       break;
-    case 7:
+    case 8:
       cout << "bye" << endl;
       exit(0);
       break;
@@ -265,6 +280,36 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
   }
 }
 
+void Dungeon::learnSkills(){
+  if(this->skill_repo.size() == 0){
+    cout << "No skills can be learned.\n";
+    return;
+  }
+  
+  cout << "Which skill you want to learn?" << endl;
+  cout << "your coin: " << this->player.getCoin() << endl;
+  for(int i = 0; i < this->skill_repo.size(); i++){
+    cout << i << endl;
+    cout << "skill name: " << this->skill_repo[i].getName() << endl;
+    cout << "cost: " << this->skill_repo[i].getCost() << endl;
+    cout << this->skill_repo[i] << endl;
+  }
+  
+  int choice;
+  cin >> choice;
+  if(choice < 0 || choice >= this->skill_repo.size()){
+    cout << "Invalid choice!\n";
+    return;
+  }
+  if(this->skill_repo[choice].getCost() > player.getCoin()){
+    cout << "You don't have enough coin.";
+    return;
+  }
+  
+  this->player.setCoin( this->player.getCoin() - this->skill_repo[choice].getCost());
+  this->player.addSkill( this->skill_repo[choice] );
+  this->skill_repo.erase( this->skill_repo.begin() + choice );
+}
 
 void Dungeon::handleCommunicate(vector<Object*> objects){
   vector<NPC*> npc_list;

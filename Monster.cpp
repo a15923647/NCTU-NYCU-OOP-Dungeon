@@ -11,6 +11,7 @@ Monster::Monster(string name, int hp, int atk, int def){
 
 ostream& operator << (ostream& outputStream, Monster& mon){
   //print player status
+  outputStream << "Attribute: " << mon.getAtt() << endl;
   outputStream << "HP: " << mon.getCurrentHealth() << "/" << mon.getMaxHealth() << endl;
   outputStream << "Attack: " << mon.getAttack() << endl;
   outputStream << "Defense: " << mon.getDefense()  << endl;
@@ -24,6 +25,7 @@ ostream& operator << (ostream& outputStream, Monster& mon){
 void Monster::reset(Monster& bk){
   this -> setGameCharacter(bk.getName(), "monster", bk.getCurrentHealth(), bk.getAttack(), bk.getDefense());
   this -> setMaxHealth( bk.getMaxHealth() );
+  this -> setAtt( bk.getAtt() );
 }
 
 bool Monster::triggerEvent(Object* obj){
@@ -49,36 +51,63 @@ bool Monster::triggerEvent(Object* obj){
         input uuddllrrba to trigger magic attack
     */
     cin >> choice;
-    while(choice != "0" && choice != "1"){
+    while(choice != "0" && choice != "1" && choice != "uuddllrrba"){
       //input error
       cout << "Invalid input\nPlz choose again\nYour choice: \n";
       cin >> choice;
     }
+    
+    double m_dodge_rate = 0.5;//maybe create a member in GameCharacter
+	  double p_dodge_rate = 0.5;
+    srand( time(NULL) );
+    
     if(choice == "1"){
       //reset monster
       this -> reset( mon_bk );
       player -> changeRoom( player->getPreviousRoom() );
       break;
     }
-    //combat system
-	srand( time(NULL) );
-  
-	double m_dodge_rate = 0.5;//maybe create a member in GameCharacter
-    //player attack
-    if(player->getAttack() > this->getDefense() ){
-      if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
-        this -> takeDamage( player->getAttack() );
-      else
-        cout << "You sucessfully dodge attack" << endl;
+    else if( choice == "uuddllrrba" ){
+      //player use skill
+      //select skill to trigger skill event
+      //check mp is enough for skill
+      vector<Skill> plysk = player -> getSkills();
+      cout << "select which skill you want to launch" << endl;
+      cout << "Current MP: " << player->getMp() << endl;
+      for(int i = 0; i < plysk.size(); i++)
+        cout << i+1 << endl << plysk[i];
+      int sk_choice;
+      cin >> sk_choice;
+      sk_choice--;
+      if(sk_choice < 0 || sk_choice >= plysk.size()){
+        cout << "Invalid choice!\n";
+        continue;
+      }
+      if(plysk[sk_choice].getMpCon() > player->getMp()){
+        cout << "Your Mp is not adequate\n";
+        continue;
+      }
+      
+      if(!plysk[sk_choice].triggerEvent( this ))
+        cout << "launch fail." << endl;
     }
-
+    else if(choice == "0"){//combat system
+      //player uses normal attack
+      if(player->getAttack() > this->getDefense() ){
+        if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
+          this -> takeDamage( player->getAttack() );
+        else
+          cout << "You sucessfully dodge attack" << endl;
+      }
+    }
+    
     if(this -> checkIsDead()){
       cout << "victory" << endl;
+      player -> heal();
       break;
     }
     
     //monster attack
-	double p_dodge_rate = 0.5;
     if( this -> getAttack() > player -> getDefense()){
       if((double)rand() / (RAND_MAX + 1.0) > p_dodge_rate)
         player -> takeDamage( this->getAttack() );
@@ -102,18 +131,27 @@ void Monster::listMember(ofstream& roomFile){
   roomFile << this -> getMaxHealth() << " ";
   roomFile << this -> getCurrentHealth() << " ";
   roomFile << this -> getAttack() << " ";
-  roomFile << this -> getDefense() << endl;
+  roomFile << this -> getDefense() << " ";
+  roomFile << this -> getAtt() << endl;
 }
 
 void Monster::loadMember(ifstream& roomFile){
-  int mh, ch, atk, def;
+  int mh, ch, atk, def, att;
   string name;
-  roomFile >> name >> mh >> ch >> atk >> def;
+  roomFile >> name >> mh >> ch >> atk >> def >> att;
   this -> setName(name);
   this -> setMaxHealth(mh);
   this -> setCurrentHealth(ch);
   this -> setAttack(atk);
   this -> setDefense(def);
-  string fmt_alg;
-  getline( roomFile, fmt_alg );
+  this -> setAtt(att);
+  roomFile.ignore();
+}
+
+int Monster::getAtt(){
+  return this->attribute_id;
+}
+
+void Monster::setAtt(int atrid){
+  this->attribute_id = atrid;
 }

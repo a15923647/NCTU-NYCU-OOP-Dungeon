@@ -7,7 +7,6 @@
 #include "Object.h"
 using namespace std;
 
-class Item;
 
 class GameCharacter: public Object
 {

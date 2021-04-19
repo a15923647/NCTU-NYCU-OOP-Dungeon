@@ -13,6 +13,7 @@
 #include "Room.h"
 #include "Record.h"
 #include "Object.h"
+#include "Skill.h"
 
 using namespace std;
 
@@ -21,6 +22,7 @@ private:
     Player player;
     Record record;
     vector<Room> rooms;
+    vector<Skill> skill_repo;
 public:
     Dungeon();
     /* Create a new player, and give him/her basic status */
@@ -59,6 +61,8 @@ public:
     void handleAttack(Room*, vector<Object*>);
 
     void handleExplore(Room*, vector<Object*>);
+    
+    void learnSkills();
 //DEBUG
     void debug();
 

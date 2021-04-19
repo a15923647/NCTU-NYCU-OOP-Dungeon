@@ -1,6 +1,7 @@
 #ifndef LEVEL_H_INCLUDED
 #define LEVEL_H_INCLUDED
-
+#include "Player.h"
+#include <fstream>
 class Player;
 
 class Level{
@@ -10,7 +11,6 @@ class Level{
     int maxXp;
     int hpBuff;
     int mpBuff;
-    int maxHpBuff;
     int attackBuff;
     int defenseBuff;
   public:
@@ -27,6 +27,7 @@ class Level{
     void calDefenseBuff();
     void setBuff(Player*);
     void resetBuff(Player*);
+    friend ostream& operator << (ostream&, Level&);
 };
 
 #endif

@@ -10,12 +10,14 @@
 #include "GameCharacter.h"
 #include "Player.h"
 #include "Item.h"
-
+#include "Skill.h"
 using namespace std;
 
+class Skill;
 class Monster: public GameCharacter
 {
 private:
+    int attribute_id;
 public:
     Monster();
     Monster(string,int,int,int);
@@ -27,8 +29,10 @@ public:
     void listMember(ofstream& );
     void loadMember(ifstream& );
     void reset( Monster& );
+    int getAtt();
+    void setAtt(int);
 	
-	friend ostream& operator <<(ostream& , const Monster& );
+	  friend ostream& operator <<(ostream& , const Monster& );
 };
 
 
