@@ -1,3 +1,1 @@
-fix player's state does'nt update after saling stucks to NPC
-add close a deal msg
-
+boost maxHealth after pick up item

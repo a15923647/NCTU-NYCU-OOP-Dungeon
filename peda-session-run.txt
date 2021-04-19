@@ -1,2 +1,2 @@
-break Record::loadFromFile(Player*, std::vector<Room, std::allocator<Room> >&)
+break Record::loadFromFile(Player*, std::vector<Room, std::allocator<Room> >&, std::vector<Skill, std::allocator<Skill> >&)
 

@@ -90,6 +90,7 @@ bool Monster::triggerEvent(Object* obj){
         continue;
       }
       
+      player -> consumeMp( plysk[sk_choice].getMpCon() );
       if(!plysk[sk_choice].triggerEvent( this ))
         cout << "launch fail." << endl;
     }
@@ -105,7 +106,11 @@ bool Monster::triggerEvent(Object* obj){
     
     if(this -> checkIsDead()){
       cout << "victory" << endl;
+      player -> getLevelO() -> increaseXp( player, this->xp );
       player -> heal();
+      for(int i = 0; i < this->drop.size(); i++){
+        player -> addItem( this->drop[i] );
+      }
       break;
     }
     
@@ -134,20 +139,34 @@ void Monster::listMember(ofstream& roomFile){
   roomFile << this -> getCurrentHealth() << " ";
   roomFile << this -> getAttack() << " ";
   roomFile << this -> getDefense() << " ";
-  roomFile << this -> getAtt() << endl;
+  roomFile << this -> getAtt() << " ";
+  roomFile << this->xp << endl;
+  
+  roomFile << this->drop.size() << endl;
+  for(int i = 0; i < this->drop.size(); i++)
+    this->drop[i].listMember( roomFile );
 }
 
 void Monster::loadMember(ifstream& roomFile){
-  int mh, ch, atk, def, att;
+  int mh, ch, atk, def, att, xp;
   string name;
-  roomFile >> name >> mh >> ch >> atk >> def >> att;
+  roomFile >> name >> mh >> ch >> atk >> def >> att >> xp;
   this -> setName(name);
   this -> setMaxHealth(mh);
   this -> setCurrentHealth(ch);
   this -> setAttack(atk);
   this -> setDefense(def);
   this -> setAtt(att);
+  this->xp = xp;
   roomFile.ignore();
+  
+  int nodrop;
+  roomFile >> nodrop;
+  roomFile.ignore();
+  while(nodrop--){
+    this->drop.push_back( Item() );
+    drop.back().loadMember( roomFile );
+  }
 }
 
 int Monster::getAtt(){
@@ -156,4 +175,20 @@ int Monster::getAtt(){
 
 void Monster::setAtt(int atrid){
   this->attribute_id = atrid;
+}
+
+void Monster::setDrop(vector<Item> drop){
+  this->drop = drop;
+}
+
+vector<Item> Monster::getDrop(){
+  return this->drop;
+}
+
+void Monster::setXp(int xp){
+  this->xp = xp;
+}
+
+int Monster::getXp(){
+  return this->xp;
 }

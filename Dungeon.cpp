@@ -114,12 +114,25 @@ void Dungeon::createMap(){
   if(!monster.eof()) 
     monster >> ridx;
   while(!monster.eof() && ridx != -3){
-    int h, a, d, att;
-    monster >> name >> h >> a >> d >> att;
+    int h, a, d, att, xp;
+    monster >> name >> h >> a >> d >> att >> xp;
 	
     Monster* new_mon = new Monster(name, h, a, d, att);
     objs_tmp[ridx].push_back( new_mon );
-	
+    new_mon -> setXp( xp );
+    
+    int nodrop;
+    monster >> nodrop;
+    vector<Item> tmp_drop;
+    tmp_drop.clear();
+    while(nodrop--){
+      string i_name;
+      int i_h, i_a, i_d;
+      monster >> i_name >> i_h >> i_a >> i_d;
+      monster.ignore();
+      tmp_drop.push_back( Item( i_name, i_h, i_a, i_d ) );
+    }
+	  new_mon -> setDrop( tmp_drop );
 	  monster >> ridx;
   }
   
@@ -145,6 +158,7 @@ void Dungeon::createMap(){
       i < nor; \
 	  this -> rooms[i].setObjects( objs_tmp[i] ), i++);
   
+  //load skills
   ifstream skills_file( "skills" );
   int nosk;
   skills_file >> nosk;
@@ -268,11 +282,6 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
       cout << "bye" << endl;
       exit(0);
       break;
-	  #ifdef DEBUG
-	  case 8:
-	    this -> debug();
-	    break;
-	  #endif
 	  default:
 	  cout << "Cannot recognize your choice.\n" << "Please select again.\n";
       cin >> choice;
@@ -302,7 +311,7 @@ void Dungeon::learnSkills(){
     return;
   }
   if(this->skill_repo[choice].getCost() > player.getCoin()){
-    cout << "You don't have enough coin.";
+    cout << "You don't have enough coin.\n";
     return;
   }
   

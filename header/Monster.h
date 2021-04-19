@@ -11,13 +11,17 @@
 #include "Player.h"
 #include "Item.h"
 #include "Skill.h"
+#include <vector>
 using namespace std;
 
 class Skill;
+class Item;
 class Monster: public GameCharacter
 {
 private:
     int attribute_id;
+    int xp;
+    vector<Item> drop;
 public:
     Monster();
     Monster(string,int,int,int,int);
@@ -30,8 +34,12 @@ public:
     void loadMember(ifstream& );
     void reset( Monster& );
     int getAtt();
+    int getXp();
+    vector<Item> getDrop();
     void setAtt(int);
-	
+    void setXp(int);
+	  void setDrop(vector<Item>);
+    
 	  friend ostream& operator <<(ostream& , const Monster& );
 };
 

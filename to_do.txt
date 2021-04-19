@@ -25,3 +25,5 @@ potion
 armour
 
 modify chooseAction list
+
+monster mp not in record

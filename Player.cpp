@@ -18,6 +18,7 @@ Player::Player(string name, int hp, int atk, int def) :
 }
 
 void Player::addItem(Item ne){
+  this -> setMaxHealth( this -> getMaxHealth() + ne.getHealth() );
   this -> increaseStates(ne.getHealth(), ne.getAttack(), ne.getDefense(), 0);
   (this -> inventory).push_back(ne);
 }
@@ -160,6 +161,11 @@ void Player::loadMember(ifstream& playerFile){
     this->skills.push_back( Skill() );
     this->skills.back().loadMember( playerFile );
   }
+}
+
+void Player::consumeMp(int dec){
+  //we have ensured mp is enough
+  this->mp -= dec;
 }
 
 vector<Item> Player::getInventory(){

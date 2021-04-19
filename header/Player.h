@@ -50,6 +50,7 @@ public:
     void addSkill(Skill);
     void calMpMax();
     void heal();//reset mp and hp
+    void consumeMp(int);
     Room* getCurrentRoom();
     Room* getPreviousRoom();
     vector<Item> getInventory();

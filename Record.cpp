@@ -233,8 +233,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
   
   int t;
   map >> t;
-  string fmt_alg;
-  getline( map, fmt_alg );
+  map.ignore();
   while( t-- ){
     int i, u, d, l, r;
 	map >> i >> u >> d >> l >> r;
