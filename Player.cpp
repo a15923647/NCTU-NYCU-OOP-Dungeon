@@ -78,6 +78,10 @@ bool Player::triggerEvent(Object* obj){
 
 
 void Player::changeRoom(Room* next){
+  if(next == (Room*)NULL){
+    cout << "Invalid option!" << endl;
+    return;
+  }
   this -> previousRoom = this -> currentRoom;
   this -> currentRoom = next;
 }

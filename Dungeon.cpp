@@ -133,6 +133,9 @@ void Dungeon::createMap(){
       tmp_drop.push_back( Item( i_name, i_h, i_a, i_d ) );
     }
 	  new_mon -> setDrop( tmp_drop );
+    
+    this->rooms[ridx].setNoMon(false);
+    
 	  monster >> ridx;
   }
   
@@ -185,18 +188,27 @@ void Dungeon::handleMovement(){
 
   while(ans != "U" && ans != "D" && ans != "L" && ans != "R"){
     cout << "which room you want to go?\n";
-    if(u != NULL) cout << "Up: U" << endl;
-    if(d != NULL) cout << "Down: D" << endl;
-    if(l != NULL) cout << "Left: L" << endl;
-    if(r != NULL) cout << "Right: R" << endl;
+    if(u != NULL && (cur -> getNoMon() || u == pre))
+      cout << "Up: U" << endl;
+    if(d != NULL && (cur -> getNoMon() || d == pre))
+      cout << "Down: D" << endl;
+    if(l != NULL && (cur -> getNoMon() || l == pre))
+      cout << "Left: L" << endl;
+    if(r != NULL && (cur -> getNoMon() || r == pre))
+      cout << "Right: R" << endl;
     cin >> ans;
   }
 
-  if(ans == "U") player.changeRoom( u );
-  if(ans == "D") player.changeRoom( d );
-  if(ans == "L") player.changeRoom( l );
-  if(ans == "R") player.changeRoom( r );
-  
+  if(ans == "U" && (cur -> getNoMon() || u == pre))
+    player.changeRoom( u );
+  else if(ans == "D" && (cur -> getNoMon() || d == pre))
+    player.changeRoom( d );
+  else if(ans == "L" && (cur -> getNoMon() || l == pre))
+    player.changeRoom( l );
+  else if(ans == "R" && (cur -> getNoMon() || r == pre))
+    player.changeRoom( r );
+  else
+    cout << "Invalid choice" << endl;
 }
 
 /*
@@ -370,9 +382,13 @@ void Dungeon::handleAttack(Room* cur, vector<Object*> objects){
   if(choice > 0 && choice <= monster_list.size())
     monster_list[choice - 1] -> triggerEvent( &(this->player) );
   
-	if(monster_list[choice - 1] -> checkIsDead())
+	if(monster_list[choice - 1] -> checkIsDead()){
 	  //monster dead, pop object from room
 	  cur -> popObject( monster_list[choice - 1] );
+    //to chk whether this room can be passed through
+    if(monster_list.size()-1 == 0)
+      cur -> setNoMon(true);
+  }
   else
     cout << "invalid choice" << endl;
 }

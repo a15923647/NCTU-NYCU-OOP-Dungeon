@@ -1,21 +1,10 @@
 boss
 * two types
 
-level system
-* boost every attribute bound base on level
-
 dodge rate random
 attack random range
 
-magic attack system
-* add attribute to monsters and and magic attack
-* class skill
-  * type
-* learn skill
-
 unbeatable state
-monster drop
-* item
 
 monster reset after player retreat.//complete but have not test
 potion
@@ -26,4 +15,6 @@ armour
 
 modify chooseAction list
 
-monster mp not in record
+allow pass through after monsters are clear
+
+explicit inventory listing

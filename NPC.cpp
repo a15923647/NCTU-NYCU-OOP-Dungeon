@@ -54,8 +54,13 @@ bool NPC::triggerEvent(Object* obj){
     }
     
     cout << "Input item index of which you want to buy" << endl;
+    cout << "Type \'0\' to quit" << endl;
     int idx;
     cin >> idx;
+    
+    if(idx == 0)
+      return true;
+    
     idx-=1;
     
     if(NPC::exchange((Object*)player, (Object*)this, this->commodity[idx]))
@@ -82,8 +87,13 @@ bool NPC::triggerEvent(Object* obj){
     }
     
     cout << "Input item index of which you want to sale" << endl;
+    cout << "Type \'0\' to quit" << endl;
     int idx;
     cin >> idx;
+    
+    if(idx == 0)
+      return true;
+    
     idx -= 1;
     
     if(NPC::exchange((Object*)this, (Object*)player, pinv[idx]))
@@ -110,13 +120,13 @@ void NPC::listMember(ofstream& roomFile){
 void NPC::loadMember(ifstream& roomFile){
   string name, script, tmp;
   int mh, ch, atk, def, co;
-  getline(roomFile, tmp);
+  roomFile.ignore();
   for(getline(roomFile, tmp); \
       tmp != ""; \
 	  script += (tmp + "\n"), getline(roomFile, tmp));
 
   roomFile >> mh >> ch >> atk >> def >> name >> co;
-  getline(roomFile, tmp);//format alignment
+  roomFile.ignore();
   
   this -> setScript(script);
   this -> setMaxHealth(mh);

@@ -12,7 +12,7 @@ Monster::Monster(string name, int hp, int atk, int def, int att){
 }
 
 ostream& operator << (ostream& outputStream, Monster& mon){
-  //print player status
+  //print monster status
   outputStream << "Attribute: " << mon.getAtt() << endl;
   outputStream << "HP: " << mon.getCurrentHealth() << "/" << mon.getMaxHealth() << endl;
   outputStream << "Attack: " << mon.getAttack() << endl;
@@ -111,7 +111,7 @@ bool Monster::triggerEvent(Object* obj){
       for(int i = 0; i < this->drop.size(); i++){
         player -> addItem( this->drop[i] );
       }
-      break;
+      return true;
     }
     
     //monster attack
@@ -130,7 +130,7 @@ bool Monster::triggerEvent(Object* obj){
     cout << player -> getName() << endl;
     player -> triggerEvent( player );
   }
-
+  return true;
 }
 
 void Monster::listMember(ofstream& roomFile){

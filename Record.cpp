@@ -67,6 +67,7 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
       switch(classid){
         case 0:
           objs.push_back( new Monster() );
+          roomList[ roomIdx ].setNoMon(false);
           break;
         case 1:
           objs.push_back( new Player() );
