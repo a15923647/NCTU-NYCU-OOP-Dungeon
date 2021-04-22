@@ -72,6 +72,7 @@ void Dungeon::createMap(){
   
   int nonpc;
   npc >> nonpc;
+  
   npc.ignore();
   
   while(nonpc--){
@@ -81,6 +82,8 @@ void Dungeon::createMap(){
     new_npc -> setName( name );
     new_npc -> setCoin( coin );
     objs_tmp[ridx].push_back( new_npc );
+    
+    this->rooms[ridx].setNoNPC(false);
     
     int scr_line;
     string tmp;
@@ -143,6 +146,7 @@ void Dungeon::createMap(){
   int notr;//number of treasure
   ifstream treasure("treasure");
   treasure >> notr;
+  
   while(notr--){
     string t_name;
 	  int t_h, t_a, t_d, t_va, t_dur;
@@ -152,7 +156,9 @@ void Dungeon::createMap(){
     nt -> setValue(t_va);
     nt -> setDurability(t_dur);
     objs_tmp[ridx].push_back( nt );
-  
+    
+    rooms[ridx].setNoTrea(false);
+    
 	  treasure.ignore();
   }
   
@@ -248,7 +254,7 @@ void Dungeon::startGame(){
   else if(choice == 3)
     exit(0);
 }
-
+/*
 void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
   int choice = -1;
   while(choice > 8 || choice < 1){
@@ -272,6 +278,11 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
   switch(choice){
     case 1:
       this -> player.triggerEvent( &(this->player) );
+      cout << "Show more information? (y/n)" << endl;
+      char choice;
+      cin >> choice;
+      if(choice == 'y')
+        this->player.showMoreInfo();
       break;
     case 2:
       this -> handleMovement();
@@ -300,7 +311,80 @@ void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
       break;
   }
 }
+*/
 
+void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
+  int choice = -1;
+  /*
+    chk state
+    move
+    learn
+  
+    handleAttack
+    handleCommunicate
+    handleExplore
+  */
+  //list all option
+  cout << "choose your action" << endl;
+  cout << "------------------------" << endl;
+  cout << "1. check status and inventory" << endl;
+  cout << "2. move to next room" << endl;
+  cout << "3. learn some skills" << endl;
+  
+  int opt = 3;
+  int monOpt = -1;
+  int npcOpt = -1;
+  int treaOpt = -1;
+  if(!(cur -> getNoMon())){
+    monOpt = ++opt;
+    cout << opt << ". attack with monster" << endl;
+  }
+  if(!(cur -> getNoNPC())){
+    npcOpt = ++opt;
+    cout << opt << ". communicate to someone" << endl;
+  }
+  if(!(cur -> getNoTrea())){
+    treaOpt = ++opt;
+    cout << opt << ". explore treasure" << endl;
+  }
+  int saveOpt = ++opt;
+  cout << opt << ". save record" << endl;
+  int byeOpt = ++opt;
+  cout << opt << ". exit this game" << endl;
+  
+  //call function
+  cin >> choice;
+  switch(choice){
+    case 1:
+      this -> player.triggerEvent( &(this->player) );
+      cout << "Show more information? (y/n)" << endl;
+      char ch;
+      cin >> ch;
+      if(ch == 'y')
+        this->player.showMoreInfo();
+      break;
+    case 2:
+      this -> handleMovement();
+      break;
+    case 3:
+      this -> learnSkills();
+    default:
+      if(choice <= opt){
+        if(choice == monOpt)
+          this -> handleAttack( cur, objects );
+        else if(choice == npcOpt)
+          this -> handleCommunicate( objects );
+        else if(choice == treaOpt)
+          this -> handleExplore( cur, objects );
+        else if(choice == saveOpt)
+          this -> record.saveToFile( &(this->player), this->rooms, this->skill_repo);
+        else if(choice == byeOpt)
+          cout << "bye" << endl, exit(0);
+      }
+      else
+        cout << "Invalid input" << endl;
+  }
+}
 void Dungeon::learnSkills(){
   if(this->skill_repo.size() == 0){
     cout << "No skills can be learned.\n";

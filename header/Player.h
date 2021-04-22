@@ -45,6 +45,7 @@ public:
     void setCurrentRoom(Room*);
     void setPreviousRoom(Room*);
     void setInventory(vector<Item>);
+    void setSkills(vector<Skill>);
     void setCoin(int);
     void setMp(int);
     void addSkill(Skill);
@@ -57,9 +58,10 @@ public:
     int getCoin();
     int getMp();
     int getMpMax();
-    vector<Skill> getSkills();
+    vector<Skill>& getSkills();
     Level* getLevelO();
     friend ostream& operator <<(ostream& , const Player& );
+    void showMoreInfo();
 };
 
 #endif // PLAYER_H_INCLUDED

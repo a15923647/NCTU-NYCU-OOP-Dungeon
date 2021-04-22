@@ -1,2 +1,3 @@
-break Record::loadFromFile(Player*, std::vector<Room, std::allocator<Room> >&, std::vector<Skill, std::allocator<Skill> >&)
+break Dungeon.cpp:354
+break Dungeon.cpp:354
 

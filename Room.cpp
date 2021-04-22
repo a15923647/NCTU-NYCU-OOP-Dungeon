@@ -1,6 +1,6 @@
 #include "Room.h"
 
-Room::Room() : isExit(false), index(-1), noMonster(true){
+Room::Room() : isExit(false), index(-1), noMonster(true), noNPC(true), noTrea(true){
   vector<Object*> tmp;
   tmp.clear();
   this -> objects = tmp;
@@ -18,7 +18,7 @@ int tag2classid(string tag){
   else if(tag == "room") return 4;
 }
 
-Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects), noMonster(true){}
+Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects), noMonster(true), noNPC(true), noTrea(true){}
 
 void Room::listMember(ofstream& roomFile){
   /*ofstream map("map", ios::out|ios::app);
@@ -108,6 +108,14 @@ void Room::setNoMon(bool clear){
   this->noMonster = clear;
 }
 
+void Room::setNoNPC(bool nnpc){
+  this->noNPC = nnpc;
+}
+
+void Room::setNoTrea(bool nnt){
+  this->noTrea = nnt;
+}
+
 bool Room::getIsExit(){
   return this -> isExit;
 }
@@ -143,4 +151,12 @@ bool Room::getNoMon(){
 bool Room::triggerEvent(Object* ){
   //no need to implement
   return true;
+}
+
+bool Room::getNoNPC(){
+  return this->noNPC;
+}
+
+bool Room::getNoTrea(){
+  return this->noTrea;
 }

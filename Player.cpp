@@ -54,8 +54,7 @@ ostream& operator << (ostream& outputStream, Player& ply){
   outputStream << "Defense: " << ply.getDefense()  << endl;
   outputStream << "Coin: " << ply.getCoin() << endl;
   
-  outputStream << endl;
-  outputStream << *ply.getLevelO() << endl;
+  outputStream << "Level: " << ply.getLevelO() -> getLevel() << endl;
   
   outputStream << "inventory: " << endl;
   for(int i = 0; i < ply.getInventory().size(); i++){
@@ -68,10 +67,52 @@ ostream& operator << (ostream& outputStream, Player& ply){
   }
 }
 
+template<class T>
+void showVectorDetail(vector<T> &v){  
+  for(int i = 0; i < v.size(); i++)
+    cout << i+1 << ". " << v[i].getName() << endl;
+  
+  int idx;
+  cin >> idx;
+  idx--;
+  if(idx >=0 && idx < v.size())
+    cout << v[idx] << endl;
+  else
+    cout << "Invalid index!" << endl;
+}
+
+void Player::showMoreInfo(){
+  cout << "1. level" << endl;
+  cout << "2. inventory" << endl;
+  cout << "3. skills" << endl;
+  cout << "type any other key to quit" << endl;
+  cout << "Your choice: ";
+  int choice;
+  cin >> choice;
+  switch(choice){
+    case 1:
+      cout << *this->level << endl;
+      break;
+    case 2:
+      cout << "Choose item" << endl;
+      if(this->inventory.size() > 0)
+        showVectorDetail( this->inventory );      
+      else
+        cout << "You have nothing." << endl;
+      break;
+    case 3:
+      cout << "Choose skills" << endl;
+      if(this->skills.size() > 0)
+        showVectorDetail( this->skills );
+      else
+        cout << "You haven't learn any skill." << endl;
+      break;
+  }
+}
+
 bool Player::triggerEvent(Object* obj){
   Player* player = dynamic_cast<Player*>(obj);
   if(player  == NULL) return false;
-  //open chest
   cout << *player;
   return true;
 }
@@ -104,6 +145,10 @@ void Player::setMp(int mp){
 
 void Player::calMpMax(){
   this -> mpMax = this->level -> getLevel() * 100;
+}
+
+void Player::setSkills(vector<Skill> update){
+  this->skills = update;
 }
 
 void Player::listMember(ofstream& playerFile){
@@ -192,7 +237,7 @@ int Player::getCoin(){
   return this -> coin;
 }
 
-vector<Skill> Player::getSkills(){
+vector<Skill>& Player::getSkills(){
   return this -> skills;
 }
 

@@ -12,9 +12,3 @@ potion
   * if meets a certain number, the item is unbreakable
   * if meets other number, minus the number by 1
 armour
-
-modify chooseAction list
-
-allow pass through after monsters are clear
-
-explicit inventory listing

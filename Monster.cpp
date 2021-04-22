@@ -46,6 +46,7 @@ bool Monster::triggerEvent(Object* obj){
   cout << "Select your choice: \n" << "0 : attack\n1 : retreat and go back to the previous room\n";
   cout << "Your choice: \n";
   string choice = "";
+  vector<Skill> plysk = player -> getSkills();
   while( !(player->checkIsDead()) && !(this->checkIsDead()) ){
     //combat until retreat or one die
     /*
@@ -73,7 +74,6 @@ bool Monster::triggerEvent(Object* obj){
       //player use skill
       //select skill to trigger skill event
       //check mp is enough for skill
-      vector<Skill> plysk = player -> getSkills();
       cout << "select which skill you want to launch" << endl;
       cout << "Current MP: " << player->getMp() << endl;
       for(int i = 0; i < plysk.size(); i++)
@@ -93,6 +93,7 @@ bool Monster::triggerEvent(Object* obj){
       player -> consumeMp( plysk[sk_choice].getMpCon() );
       if(!plysk[sk_choice].triggerEvent( this ))
         cout << "launch fail." << endl;
+      
     }
     else if(choice == "0"){//combat system
       //player uses normal attack
@@ -111,6 +112,7 @@ bool Monster::triggerEvent(Object* obj){
       for(int i = 0; i < this->drop.size(); i++){
         player -> addItem( this->drop[i] );
       }
+      player->setSkills(plysk);//update skill proficiency
       return true;
     }
     
@@ -130,6 +132,8 @@ bool Monster::triggerEvent(Object* obj){
     cout << player -> getName() << endl;
     player -> triggerEvent( player );
   }
+  //player->setSkills(plysk);//update skill proficiency
+  //used reference
   return true;
 }
 

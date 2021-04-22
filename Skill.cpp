@@ -58,7 +58,7 @@ string atrid2atr(int atrid){
 ostream& operator <<(ostream& out, Skill& sk){
   out << "attribute: " << atrid2atr(sk.attribute_id) << endl;
   out << "attack: " << sk.attack << endl;
-  out << "proficiency: " << sk.proficiency << endl;
+  out << "proficiency: " << sk.proficiency << "/" << sk.proficiency_max << endl;
   out << "MP consumption: " << sk.mpConsumption << endl;
 }
 
@@ -79,16 +79,22 @@ bool Skill::triggerEvent(Object* mon){//Monster object
   //type counter
   srand( time(NULL) );
   if((this->getAtt() - monster->getAtt() - NOATT) % NOATT == -1)
-    final_attack *= (1+rand()/RAND_MAX);
+    final_attack = (int)((1+rand()/RAND_MAX) * final_attack);
   
-  final_attack *= (int)(1+0.1 * this->proficiency);
+  final_attack = (int)((1+0.1 * this->proficiency) * final_attack);
+  
+  cout << "your magic attack point: " << final_attack << endl;
+  cout << "monster defense point: " << monster -> getDefense() << endl;
   
   double m_magic_dodge_rate = 0.1;
   
-  if(monster->getDefense() < final_attack && ((double)rand() / (RAND_MAX + 1.0) > m_magic_dodge_rate))
-    monster -> takeDamage( final_attack );
+  if(monster->getDefense() < final_attack)
+    if(((double)rand() / (RAND_MAX + 1.0) > m_magic_dodge_rate))
+      monster -> takeDamage( final_attack );
+    else
+      cout << "monster dodged your attack" << endl;
   
-  if(this->proficiency < this->proficiency_max)
+  if(this->proficiency <= this->proficiency_max)
     this->proficiency++;
   
   return true;

@@ -17,6 +17,8 @@ private:
     Room* leftRoom;
     Room* rightRoom;
     bool noMonster;
+    bool noNPC;
+    bool noTrea;
     bool isExit;
     int index;
     vector<Object*> objects; /*contain 1 or multiple objects, including monster, npc, etc*/
@@ -37,9 +39,13 @@ public:
     void setIsExit(bool);
     void setIndex(int);
     void setNoMon(bool);
+    void setNoNPC(bool);
+    void setNoTrea(bool);
     void setObjects(vector<Object*>);
     bool getIsExit();
     bool getNoMon();
+    bool getNoNPC();
+    bool getNoTrea();
     int getIndex();
     vector<Object*> getObjects();
     Room* getUpRoom();

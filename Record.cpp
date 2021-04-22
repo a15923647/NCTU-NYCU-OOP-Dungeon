@@ -74,9 +74,11 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
           break;
         case 2:
           objs.push_back( new NPC() );
+          roomList[ roomIdx ].setNoNPC(false);
           break;
         case 3:
           objs.push_back( new Item() );
+          roomList[ roomIdx ].setNoTrea(false);
           break;
         case 4:
           objs.push_back( new Room() );
@@ -187,6 +189,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   roomFile.close();
   playerFile.close();
   skill_repoFile.close();
+  cout << "save complete" << endl;
 }
 
 bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>& skill_repo){

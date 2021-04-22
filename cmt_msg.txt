@@ -1,1 +1,3 @@
 boost maxHealth after pick up item
+update proficiency by copy object
+fix random magic attack point
