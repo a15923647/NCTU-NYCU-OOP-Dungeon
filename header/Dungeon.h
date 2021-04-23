@@ -63,8 +63,6 @@ public:
     void handleExplore(Room*, vector<Object*>);
     
     void learnSkills();
-//DEBUG
-    void debug();
 
 };
 

@@ -24,6 +24,7 @@ private:
     vector<Item> drop;
 public:
     Monster();
+    Monster(ifstream&);
     Monster(string,int,int,int,int);
 
     /* Virtual function that you need to complete   */

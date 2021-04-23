@@ -45,7 +45,7 @@ bool NPC::triggerEvent(Object* obj){
     cout << "enter \'0\' to quit" << endl;
     cin >> chkout;
     while(chkout != 0){
-      chkout -= 1;
+      chkout--;
       if(chkout >= 0 && chkout < commodity.size())
         cout << commodity[chkout];
       else
@@ -61,7 +61,7 @@ bool NPC::triggerEvent(Object* obj){
     if(idx == 0)
       return true;
     
-    idx-=1;
+    idx--;
     
     if(NPC::exchange((Object*)player, (Object*)this, this->commodity[idx]))
       cout << "close a deal" << endl;
@@ -78,7 +78,7 @@ bool NPC::triggerEvent(Object* obj){
     cout << "enter \'0\' to quit" << endl;
     cin >> chkout;
     while(chkout != 0){
-      chkout -= 1;
+      chkout--;
       if(chkout >=0 && chkout < pinv.size())
         cout << pinv[chkout];
       else
@@ -94,7 +94,7 @@ bool NPC::triggerEvent(Object* obj){
     if(idx == 0)
       return true;
     
-    idx -= 1;
+    idx--;
     
     if(NPC::exchange((Object*)this, (Object*)player, pinv[idx]))
       cout << "close a deal" << endl;
@@ -139,11 +139,8 @@ void NPC::loadMember(ifstream& roomFile){
   this -> commodity.clear();
   int size;
   roomFile >> size;
-  while(size--){
-    this -> commodity.push_back( Item() );
-	this -> commodity.back().loadMember( roomFile );
-  }
-  
+  while(size--)
+    this -> commodity.push_back( Item( roomFile ) );
 }
 
 bool NPC::exchange(Object* buyer, Object* saler, Item& item){

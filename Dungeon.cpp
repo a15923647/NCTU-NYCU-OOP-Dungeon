@@ -3,7 +3,6 @@
 //init -> choose action -> ck game logic -> end or choose action
 //init: createRoom -> createPlayer
 Dungeon::Dungeon(){
-
 }
 
 void Dungeon::createPlayer(string name){
@@ -97,14 +96,7 @@ void Dungeon::createMap(){
     npc >> noi;
     npc.ignore();
     while(noi--){
-      string itmName;
-      int h, a, d, va, dur;
-      npc >> itmName >> h >> a >> d >> va >> dur;
-      npc.ignore();
-      Item nitm(itmName, h, a, d);
-      nitm.setValue(va);
-      nitm.setDurability(dur);
-      cmd.push_back( nitm );
+      cmd.push_back( Item( npc ) );
     }
     new_npc -> setCommodity(cmd);
   }
@@ -114,52 +106,28 @@ void Dungeon::createMap(){
   if(!monster.good())
     cerr << "open monster file fail.\nPlease ensure the file exists." << endl, exit(0);
   
-  if(!monster.eof()) 
+  int nuomon;
+  monster >> nuomon;
+  monster.ignore();
+  while(nuomon--){
     monster >> ridx;
-  while(!monster.eof() && ridx != -3){
-    int h, a, d, att, xp;
-    monster >> name >> h >> a >> d >> att >> xp;
-	
-    Monster* new_mon = new Monster(name, h, a, d, att);
+    Monster* new_mon = new Monster( monster );
     objs_tmp[ridx].push_back( new_mon );
-    new_mon -> setXp( xp );
-    
-    int nodrop;
-    monster >> nodrop;
-    vector<Item> tmp_drop;
-    tmp_drop.clear();
-    while(nodrop--){
-      string i_name;
-      int i_h, i_a, i_d;
-      monster >> i_name >> i_h >> i_a >> i_d;
-      monster.ignore();
-      tmp_drop.push_back( Item( i_name, i_h, i_a, i_d ) );
-    }
-	  new_mon -> setDrop( tmp_drop );
     
     this->rooms[ridx].setNoMon(false);
-    
-	  monster >> ridx;
   }
   
   //load treasure
   int notr;//number of treasure
   ifstream treasure("treasure");
   treasure >> notr;
-  
+  treasure.ignore();
   while(notr--){
-    string t_name;
-	  int t_h, t_a, t_d, t_va, t_dur;
-	  treasure >> ridx >> t_name >> t_h >> t_a >> t_d >> t_va >> t_dur;
-    
-	  Item* nt = new Item( t_name, t_h, t_a, t_d );
-    nt -> setValue(t_va);
-    nt -> setDurability(t_dur);
+    treasure >> ridx;
+	  Item* nt = new Item( treasure );
     objs_tmp[ridx].push_back( nt );
     
     rooms[ridx].setNoTrea(false);
-    
-	  treasure.ignore();
   }
   
   //bind all objects to coherent rooms
@@ -172,13 +140,8 @@ void Dungeon::createMap(){
   int nosk;
   skills_file >> nosk;
   skills_file.ignore();
-  while(nosk--){
-    string name, tag;
-    int cost, att, atk, mpCon, prof, prof_max;
-    skills_file >> cost >> name >> tag >> att >> atk >> mpCon >> prof >> prof_max;
-    skills_file.ignore();
-    skill_repo.push_back( Skill(cost, name, tag, att, atk, mpCon, prof, prof_max) );
-  }
+  while(nosk--)
+    skill_repo.push_back( Skill( skills_file ) );
 }
 
 void Dungeon::handleMovement(){
@@ -493,12 +456,13 @@ void Dungeon::handleExplore(Room* cur, vector<Object*> objects){
     cout << "There is no treasure here." << endl;
     return;
   }
-
+  
   int choice = -1;
   cout << "Which treasure you want to pick up?";
   cin >> choice;
   if(choice > 0 && choice <= item_list.size()){
     item_list[choice - 1] -> triggerEvent( &(this->player) );
+    if(item_list.size() == 1) cur -> setNoTrea(true);
 	  cur -> popObject( item_list[choice - 1] );//remove from room after being picked up
   }
   else
@@ -524,15 +488,5 @@ void Dungeon::runDungeon(){
   while(this -> checkGameLogic()){
     Room* cur = this->player.getCurrentRoom();
     this -> chooseAction( cur, cur->getObjects() );
-  }
-}
-
-void Dungeon::debug(){
-  cout << "about room: " << endl;
-  Room* cur = this -> player.getCurrentRoom();
-  vector<Object*> robjs = cur -> getObjects();
-  cout << "objects:" << endl;
-  for(int i = 0; i < robjs.size(); i++){
-    cout << robjs[i]->getName() << endl;
   }
 }

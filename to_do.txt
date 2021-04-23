@@ -12,3 +12,5 @@ potion
   * if meets a certain number, the item is unbreakable
   * if meets other number, minus the number by 1
 armour
+
+use loadMember to load npc in init file(npc), player, npc, room

@@ -1,3 +1,5 @@
-boost maxHealth after pick up item
-update proficiency by copy object
-fix random magic attack point
+using loadMember to init Item, Skill
+change init format
+add member mp to Item
+add load constructor
+clean code

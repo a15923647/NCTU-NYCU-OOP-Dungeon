@@ -1,18 +1,24 @@
 #include "Monster.h"
 Monster::Monster() {
   this -> setGameCharacter("default_monster", "monster", 10, 10, 10);
-  this -> setMaxHealth(1000);
+  this -> setMaxHealth(100);
   this -> attribute_id = 0;
 }
 
 Monster::Monster(string name, int hp, int atk, int def, int att){
   this -> setGameCharacter(name, "monster", hp, atk, def);
-  this -> setMaxHealth(1000);
+  this -> setMaxHealth(100);
   this -> attribute_id = att;
+}
+
+Monster::Monster(ifstream& fin){
+  this -> setTag("monster");
+  this -> loadMember( fin );
 }
 
 ostream& operator << (ostream& outputStream, Monster& mon){
   //print monster status
+  outputStream << "Name: " << mon.getName() << endl;
   outputStream << "Attribute: " << mon.getAtt() << endl;
   outputStream << "HP: " << mon.getCurrentHealth() << "/" << mon.getMaxHealth() << endl;
   outputStream << "Attack: " << mon.getAttack() << endl;
@@ -112,7 +118,7 @@ bool Monster::triggerEvent(Object* obj){
       for(int i = 0; i < this->drop.size(); i++){
         player -> addItem( this->drop[i] );
       }
-      player->setSkills(plysk);//update skill proficiency
+      //player->setSkills(plysk);//update skill proficiency
       return true;
     }
     
@@ -125,11 +131,9 @@ bool Monster::triggerEvent(Object* obj){
     }
 	
 	  cout << "Monster state" << endl;
-    cout << this -> getName() << endl;
 	  cout << *this << endl;
     
     cout << "Player state" << endl;
-    cout << player -> getName() << endl;
     player -> triggerEvent( player );
   }
   //player->setSkills(plysk);//update skill proficiency
@@ -167,10 +171,8 @@ void Monster::loadMember(ifstream& roomFile){
   int nodrop;
   roomFile >> nodrop;
   roomFile.ignore();
-  while(nodrop--){
-    this->drop.push_back( Item() );
-    drop.back().loadMember( roomFile );
-  }
+  while(nodrop--)
+    this->drop.push_back( Item( roomFile ) );
 }
 
 int Monster::getAtt(){

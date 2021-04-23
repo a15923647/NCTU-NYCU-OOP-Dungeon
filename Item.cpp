@@ -5,35 +5,46 @@
 }*/
 
 Item::Item() : Object("default_item","item"){
+  this->health = 0;
+  this->attack = 0;
+  this->defense = 0;
+  this->mp = 0;
+}
+Item::Item(string name, int inphea, int inpatt, int inpdef, int inpmp) : Object(name, "item"), health(inphea),  attack(inpatt), defense(inpdef), mp(inpmp){
 
 }
-Item::Item(string name, int inphea, int inpatt, int inpdef) : Object(name, "item"), health(inphea),  attack(inpatt), defense(inpdef){
 
+Item::Item(ifstream& fin){
+  this -> setTag("item");
+  this -> loadMember( fin );
 }
 
 void Item::listMember(ofstream& roomFile){
-  roomFile << this -> getTag() << " ";
+  //roomFile << this -> getTag() << " ";
   roomFile << this -> getName() << " ";
   roomFile << this -> getHealth() << " ";
   roomFile << this -> getAttack() << " ";
   roomFile << this -> getDefense() << " ";
+  roomFile << this -> getMp() << " ";
   roomFile << this -> getValue() << " ";
   roomFile << this -> getDurability() << endl;
 }
 
 void Item::loadMember(ifstream& roomFile){
-  string tag, name;
-  int h, a, d, va, dur;
-  roomFile >> tag >> name >> h >> a >> d >> va >> dur;
-  this -> setTag(tag);
+  //string tag, name;
+  string name;
+  int h, a, d, m, va, dur;
+  //roomFile >> tag >> name >> h >> a >> d >> m >> va >> dur;
+  roomFile >> name >> h >> a >> d >> m >> va >> dur;
+  //this -> setTag(tag);
   this -> setName(name);
   this -> setHealth(h);
   this -> setAttack(a);
   this -> setDefense(d);
+  this -> setMp(m);
   this -> setValue(va);
   this -> setDurability(dur);
-  string fmt_alg;
-  getline( roomFile, fmt_alg);
+  roomFile.ignore();
 }
 
 int Item::getHealth(){
@@ -56,6 +67,10 @@ int Item::getDurability(){
   return this -> durability;
 }
 
+int Item::getMp(){
+  return this -> mp;
+}
+
 void Item::setHealth(int inp){ 
   this -> health = inp;
 }
@@ -74,6 +89,10 @@ void Item::setValue(int va){
 
 void Item::setDurability(int dur){
   this -> durability = dur;
+}
+
+void Item::setMp(int mp){
+  this -> mp = mp;
 }
 
 bool Item::triggerEvent(Object* obj){
@@ -97,5 +116,6 @@ ostream& operator << (ostream& out, Item item){
   out << "Attack: " << item.getAttack() << endl;
   out << "Defense: " << item.getDefense() << endl;
   out << "Health: " << item.getHealth() << endl;
+  out << "MP: " << item.getMp() << endl;
   out << "Durability: " << item.getDurability() << endl;
 }

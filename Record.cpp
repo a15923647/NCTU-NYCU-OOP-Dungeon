@@ -28,8 +28,7 @@ void Record::saveSkill_repo(vector<Skill>& skill_repo, ofstream& skill_repoFile)
 void Record::loadPlayer(Player* player, ifstream& playerFile, vector<Room>& roomList){
   int cur, pre;
   playerFile >> cur >> pre;
-  string fmt_alg;
-  getline( playerFile, fmt_alg );
+  playerFile.ignore();
   player -> loadMember(playerFile);
 
   //put player on the map
@@ -116,10 +115,8 @@ void Record::loadSkill_repo(vector<Skill>& skill_repo, ifstream& skill_repoFile)
   skill_repoFile.ignore();
   
   skill_repo.clear();
-  while(nosk--){
-    skill_repo.push_back( Skill() );
-    skill_repo.back().loadMember( skill_repoFile );
-  }
+  while(nosk--)
+    skill_repo.push_back( Skill(skill_repoFile) );
 }
 
 void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& skill_repo){
@@ -130,6 +127,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   
   time_t now = time( 0 );
   string tim( ctime(&now) );
+  tim = tim.substr( 0, tim.length()-1 );
   int tim_size = tim.size();
   for(int i = 0; i < tim_size; i++)
     if(tim[i] == ' ')
@@ -138,28 +136,24 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
       tim[i] = '-';
   
   string mapf = subdir + '/' + MAP_FILE_PRE + '_' + tim;
-  mapf = mapf.substr( 0, mapf.length()-1 );
   ofstream map( mapf.c_str() );
   if(!map){
     map.open(mapf.c_str(), std::fstream::trunc);
   }
+  
   map << roomList.size() << endl;
   int room_size = roomList.size();
+
   for(int i = 0; i < room_size; i++){
     map << roomList[i].getIndex() << " ";
-    int tmp = (roomList[i].getUpRoom()) == (Room*)NULL ? -1 : roomList[i].getUpRoom()->getIndex();
-    map << tmp << " ";
+    map << (roomList[i].getUpRoom() == (Room*)NULL ? -1 : (int)roomList[i].getUpRoom()->getIndex()) << " ";
   
-    tmp = (roomList[i].getDownRoom()) == (Room*)NULL ? -1 : roomList[i].getDownRoom()->getIndex();
-    map << tmp << " ";
-    tmp = (roomList[i].getLeftRoom()) == (Room*)NULL ? -1 : roomList[i].getLeftRoom()->getIndex();
-    map << tmp << " ";
-    tmp = (roomList[i].getRightRoom()) == (Room*)NULL ? -1 : roomList[i].getRightRoom()->getIndex();
-    map << tmp << endl;
+    map << (roomList[i].getDownRoom() == (Room*)NULL ? -1 : (int)roomList[i].getDownRoom()->getIndex()) << " ";
+    map << (roomList[i].getLeftRoom() == (Room*)NULL ? -1 : (int)roomList[i].getLeftRoom()->getIndex()) << " ";
+    map << (roomList[i].getRightRoom() == (Room*)NULL ? -1 : (int)roomList[i].getRightRoom()->getIndex()) << endl;
   }
 
   string rmf = subdir + '/' + ROOM_FILE_PRE + '_' + tim;
-  rmf = rmf.substr( 0, rmf.length()-1 );
   ofstream roomFile( rmf.c_str() );
   if(!roomFile){
     roomFile.open(rmf.c_str(), std::fstream::trunc);
@@ -168,7 +162,6 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   this -> saveRooms( roomList, roomFile );
   
   string pf = subdir + '/' + PLAYER_FILE_PRE + '_' + tim;
-  pf = pf.substr( 0, pf.length()-1 );
   ofstream playerFile( pf.c_str() );
   if(!playerFile){
     playerFile.open(pf.c_str(), std::fstream::trunc);
@@ -177,7 +170,6 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   this -> savePlayer( player, playerFile );
   
   string skf = subdir + '/' + SKILL_FILE_PRE + '_' + tim;
-  skf = skf.substr( 0, skf.length()-1 );
   ofstream skill_repoFile( skf.c_str() );
   if(!skill_repoFile){
     skill_repoFile.open(skf.c_str(), std::fstream::trunc);
@@ -197,8 +189,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
   cout << "Player name: ";
   cin >> pName;
   
-  string subdir = "record";
-  subdir += '/' + pName;
+  string subdir = "record/" + pName;
   
   vector<string> files = vector<string>();
   getdir(subdir ,files);
@@ -212,15 +203,12 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
     }
   }
   
-  int idx;
-  cin >> idx;
+  int idx = -1;
   for(; idx <= 0 || idx > files.size(); cout << "Invalid index.\nInput again.\n")
     cin >> idx;
-  idx -= 1;
+  idx--;
   
-  string rmf = ROOM_FILE_PRE;
-  rmf += ('_' + timev[idx]);
-  rmf = (subdir + '/') + rmf;
+  string rmf = subdir + '/' + ROOM_FILE_PRE + "_" + timev[idx];
   //load objects in each room and set isExit
   ifstream roomFile( rmf.c_str() );
   if(roomFile.good())
@@ -228,9 +216,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
   else
     cerr << "open roomFile fail\n", exit(0);
   //connect them
-  string mapf = MAP_FILE_PRE;
-  mapf += ('_' + timev[idx]);
-  mapf = (subdir + '/') + mapf;
+  string mapf = subdir + '/' + MAP_FILE_PRE + '_' + timev[idx];
   ifstream map( mapf.c_str() );
   if(!map.good())
     cerr << "open map fail\n", exit(0);
@@ -249,19 +235,14 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
   }
   
   //load player
-  string pf = PLAYER_FILE_PRE;
-  pf += ('_' + timev[idx]);
-  pf = (subdir + '/') + pf;
-  
+  string pf = subdir + '/' + PLAYER_FILE_PRE + '_' + timev[idx];
   ifstream playerFile( pf.c_str() );
   if(playerFile.good())
     this -> loadPlayer( player, playerFile, roomList );
   else
     cerr << "open playerFile fail\n", exit(0);
 
-  string skf = SKILL_FILE_PRE;
-  skf += ('_' + timev[idx]);
-  skf = (subdir + '/') + skf;
+  string skf = subdir + '/' + SKILL_FILE_PRE + '_' + timev[idx];
   
   ifstream skill_repoFile( skf.c_str() );
   if(skill_repoFile.good())

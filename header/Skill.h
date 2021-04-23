@@ -12,6 +12,7 @@ class Monster;
 class Skill : public Object{
   public:
     Skill();
+    Skill(ifstream&);
     Skill(int, string, string, int, int, int, int, int);
     void setAtt(int);
     void setMpCon(int);
@@ -25,8 +26,6 @@ class Skill : public Object{
     int getProf();
     int getCost();
     
-    //void calAtk();
-    //void incProf();
     /*
       show skill info
     */

@@ -13,12 +13,13 @@ class Player;
 class Item: public Object
 {
 private:
-    int health, attack, defense;
+    int health, attack, defense, mp;
     int value;
     int durability;
 public:
     Item();
-    Item(string, int, int, int);
+    Item(ifstream&);
+    Item(string, int, int, int, int);
 
     /* Virtual function that you need to complete    */
     /* In Item, this function should deal with the   */
@@ -35,11 +36,13 @@ public:
     int getDefense();
     int getValue();
     int getDurability();
+    int getMp();
     void setHealth(int);
     void setAttack(int);
     void setDefense(int);
     void setValue(int);
     void setDurability(int);
+    void setMp(int);
     
     bool operator == (Item);
     friend ostream& operator <<(ostream&, Item);

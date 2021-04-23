@@ -23,6 +23,10 @@ Skill::Skill(int cost, string name, string tag, int att, int atk, int mpc, int p
   this->proficiency_max = prof_max;
 }
 
+Skill::Skill(ifstream& fin){
+  this -> loadMember( fin );
+}
+
 void Skill::setAtt(int atr){this->attribute_id = atr;}
 void Skill::setMpCon(int mc){this->mpConsumption = mc;}
 void Skill::setAtk(int atk){this->attack = atk;}

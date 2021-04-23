@@ -48,6 +48,7 @@ void Player::heal(){
 
 ostream& operator << (ostream& outputStream, Player& ply){
   //print player status
+  outputStream << "Name: " << ply.getName() << endl;
   outputStream << "HP: " << ply.getCurrentHealth() << "/" << ply.getMaxHealth() << endl;
   outputStream << "MP: " << ply.getMp() << "/" << ply.getMpMax() << endl;
   outputStream << "Attack: " << ply.getAttack() << endl;
@@ -55,16 +56,6 @@ ostream& operator << (ostream& outputStream, Player& ply){
   outputStream << "Coin: " << ply.getCoin() << endl;
   
   outputStream << "Level: " << ply.getLevelO() -> getLevel() << endl;
-  
-  outputStream << "inventory: " << endl;
-  for(int i = 0; i < ply.getInventory().size(); i++){
-    outputStream << "  " << ply.getInventory().at(i).getName() << endl;
-  }
-  
-  outputStream << "skills: " << endl;
-  for(int i = 0; i < ply.getSkills().size(); i++){
-    outputStream << "  " << ply.getSkills()[i].getName() << endl;
-  }
 }
 
 template<class T>
@@ -170,11 +161,11 @@ void Player::listMember(ofstream& playerFile){
     inventory[i].listMember( playerFile );
   }
   
-  vector<Skill> skv = this -> getSkills();
-  int skv_size = skv.size();
+  
+  int skv_size = this->skills.size();
   playerFile << skv_size << endl;
   for(int i = 0; i < skv_size; i++){
-    skv[i].listMember( playerFile );
+    this->skills[i].listMember( playerFile );
   }
 }
 
@@ -197,19 +188,15 @@ void Player::loadMember(ifstream& playerFile){
   int n;
   playerFile >> n;
   playerFile.ignore();
-  while(n--){
-    this->inventory.push_back( Item() );
-    this->inventory.back().loadMember( playerFile );
-  }
+  while(n--)
+    this->inventory.push_back( Item( playerFile ) );
   
   int skv_size;
   playerFile >> skv_size;
   playerFile.ignore();
   
-  while(skv_size--){
-    this->skills.push_back( Skill() );
-    this->skills.back().loadMember( playerFile );
-  }
+  while(skv_size--)
+    this->skills.push_back( Skill( playerFile ) );
 }
 
 void Player::consumeMp(int dec){
