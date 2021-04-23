@@ -5,12 +5,6 @@ Monster::Monster() {
   this -> attribute_id = 0;
 }
 
-Monster::Monster(string name, int hp, int atk, int def, int att){
-  this -> setGameCharacter(name, "monster", hp, atk, def);
-  this -> setMaxHealth(100);
-  this -> attribute_id = att;
-}
-
 Monster::Monster(ifstream& fin){
   this -> setTag("monster");
   this -> loadMember( fin );
@@ -23,11 +17,6 @@ ostream& operator << (ostream& outputStream, Monster& mon){
   outputStream << "HP: " << mon.getCurrentHealth() << "/" << mon.getMaxHealth() << endl;
   outputStream << "Attack: " << mon.getAttack() << endl;
   outputStream << "Defense: " << mon.getDefense()  << endl;
-  
-  /*outputStream << "inventory: " << endl;
-  for(int i = 0; i < mon.getInventory().size(); i++){
-    outputStream << mon.getInventory().at(i).getName() << endl;
-  }*///implement drop item
 }
 
 void Monster::reset(Monster& bk){
@@ -49,8 +38,10 @@ bool Monster::triggerEvent(Object* obj){
   if(player == NULL) return false;
 
   cout << "Encounter monster: " << this->getName() << endl;
-  cout << "Select your choice: \n" << "0 : attack\n1 : retreat and go back to the previous room\n";
-  cout << "Your choice: \n";
+  cout << "Select your choice: " << endl;
+  cout << "0 : attack" << endl;
+  cout << "1 : retreat and go back to the previous room" << endl;
+  cout << "Your choice: " << endl;
   string choice = "";
   vector<Skill> plysk = player -> getSkills();
   while( !(player->checkIsDead()) && !(this->checkIsDead()) ){
@@ -76,7 +67,7 @@ bool Monster::triggerEvent(Object* obj){
       player -> changeRoom( player->getPreviousRoom() );
       break;
     }
-    else if( choice == "uuddllrrba" ){
+    else if(choice == "uuddllrrba"){
       //player use skill
       //select skill to trigger skill event
       //check mp is enough for skill
@@ -116,9 +107,10 @@ bool Monster::triggerEvent(Object* obj){
       player -> getLevelO() -> increaseXp( player, this->xp );
       player -> heal();
       for(int i = 0; i < this->drop.size(); i++){
+        cout << "find trophy: " << endl;
+        cout << this->drop[i] << endl;
         player -> addItem( this->drop[i] );
       }
-      //player->setSkills(plysk);//update skill proficiency
       return true;
     }
     
@@ -136,7 +128,6 @@ bool Monster::triggerEvent(Object* obj){
     cout << "Player state" << endl;
     player -> triggerEvent( player );
   }
-  //player->setSkills(plysk);//update skill proficiency
   //used reference
   return true;
 }

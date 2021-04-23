@@ -63,42 +63,17 @@ void Dungeon::createMap(){
   ifstream npc( "npc" );
   if(!npc.good())
     cerr << "open npc file fail.\nPlease ensure the file exists." << endl, exit(0);
-  int coin;
-  string script;
-  vector<Item> cmd;
-  cmd.clear();
-  NPC* new_npc;
   
   int nonpc;
   npc >> nonpc;
-  
   npc.ignore();
   
   while(nonpc--){
-    npc >> name >> ridx >> coin;
+    npc >> ridx;
     npc.ignore();
-    new_npc = new NPC;
-    new_npc -> setName( name );
-    new_npc -> setCoin( coin );
-    objs_tmp[ridx].push_back( new_npc );
+    objs_tmp[ridx].push_back( new NPC( npc ) );
     
     this->rooms[ridx].setNoNPC(false);
-    
-    int scr_line;
-    string tmp;
-    npc >> scr_line;
-    npc.ignore();
-    while(scr_line--)
-      getline( npc, tmp ), script += (tmp + '\n');
-    new_npc -> setScript( script );
-    
-    int noi;
-    npc >> noi;
-    npc.ignore();
-    while(noi--){
-      cmd.push_back( Item( npc ) );
-    }
-    new_npc -> setCommodity(cmd);
   }
   
   //load Monster
@@ -111,8 +86,7 @@ void Dungeon::createMap(){
   monster.ignore();
   while(nuomon--){
     monster >> ridx;
-    Monster* new_mon = new Monster( monster );
-    objs_tmp[ridx].push_back( new_mon );
+    objs_tmp[ridx].push_back( new Monster( monster ) );
     
     this->rooms[ridx].setNoMon(false);
   }
@@ -217,64 +191,6 @@ void Dungeon::startGame(){
   else if(choice == 3)
     exit(0);
 }
-/*
-void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
-  int choice = -1;
-  while(choice > 8 || choice < 1){
-    cout << "choose your action" << endl;
-    cout << "------------------------" << endl;
-    cout << "1. check status and inventory" << endl;
-    cout << "2. move to next room" << endl;
-    cout << "3. communicate to someone" << endl;
-    cout << "4. attack with monster" << endl;
-    cout << "5. explore treasure" << endl;
-    cout << "6. learn skills" << endl;
-    cout << "7. save game" << endl;
-    cout << "8. exit this game" << endl;
-	#ifdef DEBUG
-	cout << "8. debug" << endl;
-	#endif
-    cout << "your choice: ";
-    cin >> choice;
-  }
-
-  switch(choice){
-    case 1:
-      this -> player.triggerEvent( &(this->player) );
-      cout << "Show more information? (y/n)" << endl;
-      char choice;
-      cin >> choice;
-      if(choice == 'y')
-        this->player.showMoreInfo();
-      break;
-    case 2:
-      this -> handleMovement();
-      break;
-    case 3:
-      this -> handleCommunicate( objects );
-      break;
-    case 4:
-      this -> handleAttack( cur, objects );
-      break;
-    case 5:
-      this -> handleExplore( cur, objects );
-      break;
-    case 6:
-      this -> learnSkills();
-    case 7:
-      this -> record.saveToFile( &(this->player), this->rooms, this->skill_repo);
-      break;
-    case 8:
-      cout << "bye" << endl;
-      exit(0);
-      break;
-	  default:
-	  cout << "Cannot recognize your choice.\n" << "Please select again.\n";
-      cin >> choice;
-      break;
-  }
-}
-*/
 
 void Dungeon::chooseAction(Room* cur, vector<Object*> objects){
   int choice = -1;

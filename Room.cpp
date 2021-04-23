@@ -18,50 +18,34 @@ int tag2classid(string tag){
   else if(tag == "room") return 4;
 }
 
-Room::Room(bool exit, int ind, vector<Object*> objects) : isExit(exit), index(ind), objects(objects), noMonster(true), noNPC(true), noTrea(true){}
-
 void Room::listMember(ofstream& roomFile){
-  /*ofstream map("map", ios::out|ios::app);
-  map << this->getIndex() << " ";
-  int tmp = (this->getUpRoom()) == (Room*)NULL ? -1 : this->upRoom->getIndex();
-  map << tmp << " ";
+  roomFile << this->index << endl;//will be read by Record::loadRooms to specify which room to load
+  roomFile << this->isExit << endl;
   
-  tmp = (this->getDownRoom()) == (Room*)NULL ? -1 : this->downRoom->getIndex();
-  map << tmp << " ";
-  tmp = (this->getLeftRoom()) == (Room*)NULL ? -1 : this->leftRoom->getIndex();
-  map << tmp << " ";
-  tmp = (this->getRightRoom()) == (Room*)NULL ? -1 : this->rightRoom->getIndex();
-  map << tmp << endl;
-
-  map.close();
-  */
-  //implement in Record.cpp
-
-  roomFile << this->getIndex() << endl;
-  roomFile << this->getIsExit() << endl;
-  
-  vector<Object*> objs = this->getObjects();
   /*
    * # CLASSID
    * Monster     0
-   * Player      1
+   * Player      1//impossible
    * NPC         2
-   * Item        3 //impossible
+   * Item        3 
    * Room        4 //impossible
    * endobjlist -1
    */
-  for(int i = 0; i < objs.size(); i++){
-    roomFile << tag2classid( objs[i]->getTag() ) << endl;
-    objs[i]->listMember( roomFile );
+   int objs_size = this->objects.size();
+   roomFile << objs_size << endl;
+   
+  for(int i = 0; i < objs_size; i++){
+    roomFile << tag2classid( this->objects[i] -> getTag() ) << endl;
+    this->objects[i] -> listMember( roomFile );
   }
-  roomFile << -1 << endl;//endobjlist
 }
 
 void Room::loadMember(ifstream& roomFile){
-  //roomIndex has been read and set in Record::loadRoom
-  int tmp, classid;
+  int tmp;
   roomFile >> tmp;
-  this -> setIsExit(tmp);
+  this -> isExit = tmp;
+  roomFile.ignore();
+  //cannot new descendent objects, so load other objects in Record::loadRooms
 }
 
 bool Room::popObject(Object* obj){

@@ -13,7 +13,6 @@ class Skill : public Object{
   public:
     Skill();
     Skill(ifstream&);
-    Skill(int, string, string, int, int, int, int, int);
     void setAtt(int);
     void setMpCon(int);
     void setAtk(int);

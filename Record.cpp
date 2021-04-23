@@ -44,25 +44,36 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
   then connect each of them by linked list
 */
   roomList.clear();
-  int n;
+  int n, cnt;
   roomFile >> n;
+  cnt = n;
   //create empty rooms
   for(int i = 0; i < n; i++){
     roomList.push_back(Room());
     roomList[i].setIndex(i);
   }
   
-  //roomFile.ignore();//fmt_alg
+  roomFile.ignore();
   //load every room
   int roomIdx = -1;
   
-  for(roomFile >> roomIdx; !roomFile.eof(); roomFile >> roomIdx){
-    roomList[ roomIdx ].loadMember(roomFile);//load isExit
+  while(cnt--){
+    roomFile >> roomIdx;
+    roomFile.ignore();
+    roomList[ roomIdx ].loadMember(roomFile);
     //load other members since room cannot access monster, npc, player, item
     int classid;
     vector<Object*> objs;
     objs.clear();
-    for(roomFile >> classid; classid != -1; roomFile >> classid){
+    
+    int objs_size, cnt;
+    roomFile >> objs_size;
+    cnt = objs_size;
+    roomFile.ignore();
+    
+    while(cnt--){
+      roomFile >> classid;
+      roomFile.ignore();
       switch(classid){
         case 0:
           objs.push_back( new Monster() );
@@ -90,23 +101,6 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
     }
     roomList[roomIdx].setObjects( objs );
   }
-  /*//connect them together
-  ifstream map("map");
-  int t;
-  map >> t;
-  string fmt_alg;
-  getline( map, fmt_alg );
-  while( t-- ){
-    int i, u, d, l, r;
-	map >> i >> u >> d >> l >> r;
-	
-    if(u != -1) roomList[i].setUpRoom( &roomList[u] );
-    if(d != -1) roomList[i].setDownRoom( &roomList[d] );
-    if(l != -1) roomList[i].setLeftRoom( &roomList[l] );
-    if(r != -1) roomList[i].setRightRoom( &roomList[r] );
-  }
-  map.close();*/
-  //implement in Record::loadFromFile
 }
 
 void Record::loadSkill_repo(vector<Skill>& skill_repo, ifstream& skill_repoFile){
@@ -134,7 +128,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
       tim[i] = '_';
     else if(tim[i] == ':')
       tim[i] = '-';
-  
+  //save map
   string mapf = subdir + '/' + MAP_FILE_PRE + '_' + tim;
   ofstream map( mapf.c_str() );
   if(!map){
@@ -152,7 +146,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
     map << (roomList[i].getLeftRoom() == (Room*)NULL ? -1 : (int)roomList[i].getLeftRoom()->getIndex()) << " ";
     map << (roomList[i].getRightRoom() == (Room*)NULL ? -1 : (int)roomList[i].getRightRoom()->getIndex()) << endl;
   }
-
+  //save room objects
   string rmf = subdir + '/' + ROOM_FILE_PRE + '_' + tim;
   ofstream roomFile( rmf.c_str() );
   if(!roomFile){
@@ -160,7 +154,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   }
   
   this -> saveRooms( roomList, roomFile );
-  
+  //save player
   string pf = subdir + '/' + PLAYER_FILE_PRE + '_' + tim;
   ofstream playerFile( pf.c_str() );
   if(!playerFile){
@@ -168,7 +162,7 @@ void Record::saveToFile(Player* player, vector<Room>& roomList, vector<Skill>& s
   }
   
   this -> savePlayer( player, playerFile );
-  
+  //save skill_repo
   string skf = subdir + '/' + SKILL_FILE_PRE + '_' + tim;
   ofstream skill_repoFile( skf.c_str() );
   if(!skill_repoFile){
@@ -204,7 +198,7 @@ bool Record::loadFromFile(Player* player, vector<Room>& roomList, vector<Skill>&
   }
   
   int idx = -1;
-  for(; idx <= 0 || idx > files.size(); cout << "Invalid index.\nInput again.\n")
+  for(cin >> idx; idx <= 0 || idx > files.size(); cout << "Invalid index.\nInput again.\n")
     cin >> idx;
   idx--;
   

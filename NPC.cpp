@@ -5,10 +5,9 @@ NPC::NPC(){
   this -> setGameCharacter("default_NPC", "NPC", INT_MAX, INT_MAX, INT_MAX);
 }
 
-NPC::NPC(string name, string script, vector<Item> commodity){
-  this -> setGameCharacter(name, "NPC", INT_MAX, INT_MAX, INT_MAX);
-  this -> script = script;
-  this -> commodity = commodity;
+NPC::NPC(ifstream& fin){
+  this -> setTag("NPC");
+  this -> loadMember(fin);
 }
 
 void NPC::listCommodity(){
@@ -102,6 +101,11 @@ bool NPC::triggerEvent(Object* obj){
 }
 
 void NPC::listMember(ofstream& roomFile){
+  int scr_line_cnt = 0;
+  for(int i = 0; i < this->script.size(); i++)
+    if(this->script[i] == '\n') scr_line_cnt++;
+  
+  roomFile << scr_line_cnt << endl;
   roomFile << this -> getScript() << endl;
   roomFile << this -> getMaxHealth() << " ";
   roomFile << this -> getCurrentHealth() << " ";
@@ -119,11 +123,18 @@ void NPC::listMember(ofstream& roomFile){
 
 void NPC::loadMember(ifstream& roomFile){
   string name, script, tmp;
-  int mh, ch, atk, def, co;
+  int scr_line_cnt, mh, ch, atk, def, co;
+  roomFile >> scr_line_cnt;
   roomFile.ignore();
-  for(getline(roomFile, tmp); \
+  
+  while(scr_line_cnt--){
+    getline(roomFile, tmp);
+    script += (tmp + "\n");
+  }
+  roomFile.ignore();
+  /*for(getline(roomFile, tmp); \
       tmp != ""; \
-	  script += (tmp + "\n"), getline(roomFile, tmp));
+	  script += (tmp + "\n"), getline(roomFile, tmp));*/
 
   roomFile >> mh >> ch >> atk >> def >> name >> co;
   roomFile.ignore();

@@ -22,7 +22,7 @@ private:
     vector<Item> commodity;
 public:
     NPC();
-    NPC(string, string, vector<Item>);
+    NPC(ifstream&);
     void listCommodity(); /*print all the Item in this NPC*/
 
     /* Virtual function that you need to complete   */

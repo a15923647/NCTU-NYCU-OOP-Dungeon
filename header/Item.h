@@ -19,7 +19,6 @@ private:
 public:
     Item();
     Item(ifstream&);
-    Item(string, int, int, int, int);
 
     /* Virtual function that you need to complete    */
     /* In Item, this function should deal with the   */

@@ -1,17 +1,10 @@
 #include "Item.h"
 
-/*Item::Item() : Object("default_item","item"), health(0), attack(0), defense(0){
-
-}*/
-
 Item::Item() : Object("default_item","item"){
   this->health = 0;
   this->attack = 0;
   this->defense = 0;
   this->mp = 0;
-}
-Item::Item(string name, int inphea, int inpatt, int inpdef, int inpmp) : Object(name, "item"), health(inphea),  attack(inpatt), defense(inpdef), mp(inpmp){
-
 }
 
 Item::Item(ifstream& fin){
@@ -20,7 +13,6 @@ Item::Item(ifstream& fin){
 }
 
 void Item::listMember(ofstream& roomFile){
-  //roomFile << this -> getTag() << " ";
   roomFile << this -> getName() << " ";
   roomFile << this -> getHealth() << " ";
   roomFile << this -> getAttack() << " ";
@@ -31,12 +23,9 @@ void Item::listMember(ofstream& roomFile){
 }
 
 void Item::loadMember(ifstream& roomFile){
-  //string tag, name;
   string name;
   int h, a, d, m, va, dur;
-  //roomFile >> tag >> name >> h >> a >> d >> m >> va >> dur;
   roomFile >> name >> h >> a >> d >> m >> va >> dur;
-  //this -> setTag(tag);
   this -> setName(name);
   this -> setHealth(h);
   this -> setAttack(a);
@@ -113,6 +102,7 @@ bool Item::operator == (Item a){
 }
 
 ostream& operator << (ostream& out, Item item){
+  out << "Name: " << item.getName() << endl;
   out << "Attack: " << item.getAttack() << endl;
   out << "Defense: " << item.getDefense() << endl;
   out << "Health: " << item.getHealth() << endl;

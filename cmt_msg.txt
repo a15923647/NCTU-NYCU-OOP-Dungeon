@@ -1,5 +1,6 @@
-using loadMember to init Item, Skill
 change init format
 add member mp to Item
-add load constructor
 clean code
+ * delete redundant constructor
+ * using constructor calling loadMember to init Item, Skill
+ * delete debug comments

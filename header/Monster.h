@@ -25,7 +25,6 @@ private:
 public:
     Monster();
     Monster(ifstream&);
-    Monster(string,int,int,int,int);
 
     /* Virtual function that you need to complete   */
     /* In Monster, this function should deal with   */

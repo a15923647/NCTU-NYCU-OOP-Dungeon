@@ -12,17 +12,6 @@ Skill::Skill(){
   this->proficiency_max = 10;
 }
 
-Skill::Skill(int cost, string name, string tag, int att, int atk, int mpc, int prof, int prof_max){
-  this->cost = cost;
-  this -> setName( name );
-  this -> setTag( tag );
-  this->attribute_id = att;
-  this->attack = atk;
-  this->mpConsumption = mpc;
-  this->proficiency = prof;
-  this->proficiency_max = prof_max;
-}
-
 Skill::Skill(ifstream& fin){
   this -> loadMember( fin );
 }
@@ -65,7 +54,6 @@ ostream& operator <<(ostream& out, Skill& sk){
   out << "proficiency: " << sk.proficiency << "/" << sk.proficiency_max << endl;
   out << "MP consumption: " << sk.mpConsumption << endl;
 }
-
 
 /*
 Fight monster via skill

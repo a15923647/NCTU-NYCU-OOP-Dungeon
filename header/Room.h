@@ -24,7 +24,6 @@ private:
     vector<Object*> objects; /*contain 1 or multiple objects, including monster, npc, etc*/
 public:
     Room();
-    Room(bool, int, vector<Object*>);
     bool popObject(Object*); /*pop out the specific object, used when the interaction is done*/
     // e.g. monster is dead, NPC leave...
     void listMember(ofstream& );
