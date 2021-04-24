@@ -52,9 +52,10 @@ public:
     void calMpMax();
     void heal();//reset mp and hp
     void consumeMp(int);
+    void popProp(Item*);
     Room* getCurrentRoom();
     Room* getPreviousRoom();
-    vector<Item> getInventory();
+    vector<Item>& getInventory();
     int getCoin();
     int getMp();
     int getMpMax();

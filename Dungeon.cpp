@@ -377,7 +377,7 @@ void Dungeon::handleExplore(Room* cur, vector<Object*> objects){
   cout << "Which treasure you want to pick up?";
   cin >> choice;
   if(choice > 0 && choice <= item_list.size()){
-    item_list[choice - 1] -> triggerEvent( &(this->player) );
+    this->player.addItem( *item_list[choice - 1] );
     if(item_list.size() == 1) cur -> setNoTrea(true);
 	  cur -> popObject( item_list[choice - 1] );//remove from room after being picked up
   }

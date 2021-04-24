@@ -18,9 +18,11 @@ Player::Player(string name, int hp, int atk, int def) :
 }
 
 void Player::addItem(Item ne){
-  this -> setMaxHealth( this -> getMaxHealth() + ne.getHealth() );
-  this -> increaseStates(ne.getHealth(), ne.getAttack(), ne.getDefense(), 0);
-  (this -> inventory).push_back(ne);
+  if(ne.getActive()){
+    this -> raiseBound(ne.getHealth(), ne.getMp());
+    this -> increaseStates(0, ne.getAttack(), ne.getDefense(), 0);
+  } 
+  this->inventory.push_back(ne);
 }
 
 void Player::increaseStates(int h, int a, int d, int m){
@@ -29,11 +31,12 @@ void Player::increaseStates(int h, int a, int d, int m){
   int def = this->getDefense();
   int mhp = this->getMaxHealth();
   int mp = this->mp;
+  int mmp = this->mpMax;
   
-  this -> setMp( mp + m );
   this -> setCurrentHealth( min(hp + h, mhp) );
   this -> setAttack( atk + a );
   this -> setDefense( def + d );
+  this -> setMp( min(mp + m, mmp) );
 }
 
 void Player::raiseBound(int h, int m){
@@ -204,7 +207,7 @@ void Player::consumeMp(int dec){
   this->mp -= dec;
 }
 
-vector<Item> Player::getInventory(){
+vector<Item>& Player::getInventory(){
   return this -> inventory;
 }
 
@@ -242,4 +245,11 @@ int Player::getMpMax(){
 
 Level* Player::getLevelO(){
   return this->level;
+}
+
+void Player::popProp(Item* brok){
+  for(int i = 0; i < this->inventory.size(); i++){
+    if(*brok == this->inventory[i])
+      this->inventory.erase( this->inventory.begin() + i );
+  }
 }

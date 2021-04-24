@@ -176,7 +176,7 @@ bool NPC::exchange(Object* buyer, Object* saler, Item& item){
           sainv.erase( sainv.begin() + idx );
           sucess = true;
           //avoid negative chk should be implement
-          s->increaseStates( -item.getHealth(), -item.getAttack(), -item.getDefense(), 0 );
+          s->increaseStates( -item.getHealth(), -item.getAttack(), -item.getDefense(), -item.getMp() );
         }
         idx++;
       }

@@ -40,28 +40,87 @@ bool Monster::triggerEvent(Object* obj){
   cout << "Encounter monster: " << this->getName() << endl;
   cout << "Select your choice: " << endl;
   cout << "0 : attack" << endl;
-  cout << "1 : retreat and go back to the previous room" << endl;
+  cout << "1 : use props" << endl;
+  cout << "2 : retreat and go back to the previous room" << endl;
   cout << "Your choice: " << endl;
+  
+  //combat init
   string choice = "";
   vector<Skill> plysk = player -> getSkills();
+  vector<Item> tmpi = player -> getInventory();
+  vector<Item*> contiProps, inactProps;
+  int tmpi_size = tmpi.size();
+  for(int i = 0; i < tmpi_size; i++)
+    if(tmpi[i].getContinuous())
+      contiProps.push_back( &tmpi[i] );
+    else if(!tmpi[i].getActive())
+      inactProps.push_back( &tmpi[i] );
+      
+  int conti_size = contiProps.size();
+  int inact_size = inactProps.size();
+  
+  //combat until retreat or one die
   while( !(player->checkIsDead()) && !(this->checkIsDead()) ){
-    //combat until retreat or one die
     /*
       idea:
         input uuddllrrba to trigger magic attack
     */
+    for(int i = 0; i < conti_size; i++)
+      contiProps[i] -> triggerEvent( player );
+    
     cin >> choice;
-    while(choice != "0" && choice != "1" && choice != "uuddllrrba"){
+  while(choice != "0" && choice != "1" && choice != "2" && choice != "uuddllrrba"){
       //input error
-      cout << "Invalid input\nPlz choose again\nYour choice: \n";
+      cout << "Invalid input\nPlease choose again\nYour choice: \n";
       cin >> choice;
     }
     
     double m_dodge_rate = 0.5;//maybe create a member in GameCharacter
 	  double p_dodge_rate = 0.5;
     srand( time(NULL) );
-    
     if(choice == "1"){
+      cout << "your prop list: " << endl;
+      for(int i = 0; i < inact_size; i++)
+        cout << i+1 << ": " << inactProps[i] -> getName() << endl;
+      cout << "show more detail?(y/n)" << endl;
+      char det;
+      cin >> det;
+      if(det == 'y'){
+        cout << "select index" << endl;
+        cout << "type 0 to quit" << endl;
+        int idx;
+        cin >> idx;
+        while(idx > 0 && idx <= inact_size){
+          idx--;
+          cout << *inactProps[idx] << endl;
+          cin >> idx;
+        }
+      }
+      
+      cout << "which props to use?" << endl;
+      cout << "type 0 if don't want to use any" << endl;
+      int idx;
+      cin >> idx;
+      idx--;
+      if(idx >= 0 && idx < inact_size){
+        int h = inactProps[idx] -> getHealth();
+        int a = inactProps[idx] -> getAttack();
+        int d = inactProps[idx] -> getDefense();
+        int m = inactProps[idx] -> getMp();
+        player -> increaseStates(h, a, d, m);
+        inactProps[idx] -> decDur(1);
+        if(inactProps[idx] -> getDurability() <= 0){
+          player -> popProp(inactProps[idx]);
+          inactProps.erase( inactProps.begin() + idx );
+          inact_size--;
+        }
+        
+        cout << "your state: " << endl;
+        player -> triggerEvent( player );
+      }
+      continue;
+    }
+    else if(choice == "2"){
       //reset monster
       this -> reset( mon_bk );
       player -> changeRoom( player->getPreviousRoom() );
@@ -98,7 +157,7 @@ bool Monster::triggerEvent(Object* obj){
         if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
           this -> takeDamage( player->getAttack() );
         else
-          cout << "You sucessfully dodge attack" << endl;
+          cout << this -> getName() << " sucessfully dodge your attack\n";
       }
     }
     
@@ -119,7 +178,7 @@ bool Monster::triggerEvent(Object* obj){
       if((double)rand() / (RAND_MAX + 1.0) > p_dodge_rate)
         player -> takeDamage( this->getAttack() );
       else
-        cout << this -> getName() << " sucessfully dodge your attac\n";
+        cout << "You sucessfully dodge attack" << endl;
     }
 	
 	  cout << "Monster state" << endl;
