@@ -53,6 +53,7 @@ public:
     void heal();//reset mp and hp
     void consumeMp(int);
     void popProp(Item*);
+    void updateProp(vector<Item*>);
     Room* getCurrentRoom();
     Room* getPreviousRoom();
     vector<Item>& getInventory();

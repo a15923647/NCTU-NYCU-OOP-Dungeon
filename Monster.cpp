@@ -124,6 +124,7 @@ bool Monster::triggerEvent(Object* obj){
       //reset monster
       this -> reset( mon_bk );
       player -> changeRoom( player->getPreviousRoom() );
+      player -> updateProp(inactProps);
       break;
     }
     else if(choice == "uuddllrrba"){
@@ -165,6 +166,7 @@ bool Monster::triggerEvent(Object* obj){
       cout << "victory" << endl;
       player -> getLevelO() -> increaseXp( player, this->xp );
       player -> heal();
+      player -> updateProp(inactProps);
       for(int i = 0; i < this->drop.size(); i++){
         cout << "find trophy: " << endl;
         cout << this->drop[i] << endl;

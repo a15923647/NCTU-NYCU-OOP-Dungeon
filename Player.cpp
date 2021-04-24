@@ -25,6 +25,15 @@ void Player::addItem(Item ne){
   this->inventory.push_back(ne);
 }
 
+void Player::updateProp(vector<Item*> upd){
+  for(int i = 0; i < upd.size(); i++){
+    for(int j = 0; j < this->inventory.size(); j++){
+      if( *upd[i] == this->inventory[j] )
+        this->inventory[j] = *upd[i];
+    }
+  }
+}
+
 void Player::increaseStates(int h, int a, int d, int m){
   int hp = this->getCurrentHealth();
   int atk = this->getAttack();
