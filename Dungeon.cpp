@@ -344,6 +344,8 @@ void Dungeon::handleAttack(Room* cur, vector<Object*> objects){
   cin >> choice;
   if(choice > 0 && choice <= monster_list.size())
     monster_list[choice - 1] -> triggerEvent( &(this->player) );
+  else
+    cout << "invalid choice" << endl;
   
 	if(monster_list[choice - 1] -> checkIsDead()){
 	  //monster dead, pop object from room
@@ -352,8 +354,7 @@ void Dungeon::handleAttack(Room* cur, vector<Object*> objects){
     if(monster_list.size()-1 == 0)
       cur -> setNoMon(true);
   }
-  else
-    cout << "invalid choice" << endl;
+  
 }
 
 void Dungeon::handleExplore(Room* cur, vector<Object*> objects){

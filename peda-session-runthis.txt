@@ -1,2 +1,0 @@
-break /home/anger/nextcloud_sync_file/ubuntu/Dungeon/Dungeon.cpp:288
-

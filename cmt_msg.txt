@@ -1,6 +1,0 @@
-change init format
-add member mp to Item
-clean code
- * delete redundant constructor
- * using constructor calling loadMember to init Item, Skill
- * delete debug comments

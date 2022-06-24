@@ -25,6 +25,14 @@ void Monster::reset(Monster& bk){
   this -> setAtt( bk.getAtt() );
 }
 
+void listOpt(){
+  cout << "Select your choice: " << endl;
+  cout << "0 : attack" << endl;
+  cout << "1 : use props" << endl;
+  cout << "2 : retreat and go back to the previous room" << endl;
+  cout << "Your choice: " << endl;
+}
+
 bool Monster::triggerEvent(Object* obj){
   //implement combat system
   /*
@@ -38,11 +46,7 @@ bool Monster::triggerEvent(Object* obj){
   if(player == NULL) return false;
 
   cout << "Encounter monster: " << this->getName() << endl;
-  cout << "Select your choice: " << endl;
-  cout << "0 : attack" << endl;
-  cout << "1 : use props" << endl;
-  cout << "2 : retreat and go back to the previous room" << endl;
-  cout << "Your choice: " << endl;
+  
   
   //combat init
   string choice = "";
@@ -65,11 +69,13 @@ bool Monster::triggerEvent(Object* obj){
       idea:
         input uuddllrrba to trigger magic attack
     */
+    
     for(int i = 0; i < conti_size; i++)
       contiProps[i] -> triggerEvent( player );
     
+    listOpt();
     cin >> choice;
-  while(choice != "0" && choice != "1" && choice != "2" && choice != "uuddllrrba"){
+    while(choice != "0" && choice != "1" && choice != "2" && choice != "uuddllrrba"){
       //input error
       cout << "Invalid input\nPlease choose again\nYour choice: \n";
       cin >> choice;
@@ -125,6 +131,7 @@ bool Monster::triggerEvent(Object* obj){
       this -> reset( mon_bk );
       player -> changeRoom( player->getPreviousRoom() );
       player -> updateProp(inactProps);
+      player -> setSkills(plysk);
       break;
     }
     else if(choice == "uuddllrrba"){
@@ -154,9 +161,22 @@ bool Monster::triggerEvent(Object* obj){
     }
     else if(choice == "0"){//combat system
       //player uses normal attack
+      cout << "your attack: " << player -> getAttack() << endl;
+      cout << "Monster defense" << this->getDefense() << endl;
+      int r = rand();
+      double random_rate;
+      for(int i = 0; i < 5; i++, r = rand());/*{
+        random_rate = (double)r / (RAND_MAX + 1.0);
+        cout << "r: " << r << endl;
+        cout << "(double)r: " << (double)r << endl;
+        cout << RAND_MAX + 1.0 << endl;
+      }*/
+      random_rate = (double)r / (RAND_MAX + 1.0);
       if(player->getAttack() > this->getDefense() ){
-        if( ((double)rand() / (RAND_MAX + 1.0) > m_dodge_rate ) )
+        if( ( random_rate > m_dodge_rate ) ){
+          cout << "monster takes " << player->getAttack() << " points of damage" << endl;
           this -> takeDamage( player->getAttack() );
+        }
         else
           cout << this -> getName() << " sucessfully dodge your attack\n";
       }
@@ -167,6 +187,7 @@ bool Monster::triggerEvent(Object* obj){
       player -> getLevelO() -> increaseXp( player, this->xp );
       player -> heal();
       player -> updateProp(inactProps);
+      player -> setSkills(plysk);
       for(int i = 0; i < this->drop.size(); i++){
         cout << "find trophy: " << endl;
         cout << this->drop[i] << endl;
@@ -177,8 +198,10 @@ bool Monster::triggerEvent(Object* obj){
     
     //monster attack
     if( this -> getAttack() > player -> getDefense()){
-      if((double)rand() / (RAND_MAX + 1.0) > p_dodge_rate)
+      if((double)rand() / (RAND_MAX + 1.0) > p_dodge_rate){
+        cout << "you take " << this->getAttack() << "points of damage" << endl;
         player -> takeDamage( this->getAttack() );
+      }
       else
         cout << "You sucessfully dodge attack" << endl;
     }

@@ -236,7 +236,7 @@ int Player::getCoin(){
   return this -> coin;
 }
 
-vector<Skill>& Player::getSkills(){
+vector<Skill> Player::getSkills(){
   return this -> skills;
 }
 

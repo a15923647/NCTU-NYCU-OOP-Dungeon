@@ -90,9 +90,6 @@ void Record::loadRooms(vector<Room>& roomList, ifstream& roomFile){
           objs.push_back( new Item() );
           roomList[ roomIdx ].setNoTrea(false);
           break;
-        case 4:
-          objs.push_back( new Room() );
-          break;
         case -1:
           return;
           break;

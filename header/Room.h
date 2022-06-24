@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Room : public Object
+class Room
 {
 private:
     Room* upRoom;

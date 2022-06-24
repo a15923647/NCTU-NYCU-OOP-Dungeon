@@ -60,7 +60,7 @@ public:
     int getCoin();
     int getMp();
     int getMpMax();
-    vector<Skill>& getSkills();
+    vector<Skill> getSkills();
     Level* getLevelO();
     friend ostream& operator <<(ostream& , const Player& );
     void showMoreInfo();
